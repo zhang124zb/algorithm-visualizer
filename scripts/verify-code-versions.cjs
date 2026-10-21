@@ -1,0 +1,91 @@
+const fs=require('node:fs');
+const path=require('node:path');
+const vm=require('node:vm');
+const {spawnSync}=require('node:child_process');
+const root=path.resolve(__dirname,'..'),dist=path.join(root,'dist'),context=vm.createContext({console});
+const load=file=>vm.runInContext(fs.readFileSync(path.join(dist,file),'utf8'),context);
+load('assets/js/core.js');load('assets/js/catalog.js');const L=context.AlgoLab;
+// The original 65 fixtures stay here; new lessons use verify-competition-native.cjs.
+const originalItems=L.items.filter(item=>!L.foundationIds.includes(item.id));
+for(const group of L.groups)load(`${group.section}/${group.id}/code-variants.js`);
+const specs=new Map(),add=(id,python,java)=>specs.set(id,{python,java});
+const cls=id=>'C_'+id.replaceAll('-','_');
+const pyInput='a = [8,2,8,1,5,3]\n',javaInput='List<Integer> a = new ArrayList<>(Arrays.asList(8,2,8,1,5,3));';
+for(const [id,python,java]of [['bubble-sort','bubble_sort','bubbleSort'],['selection-sort','selection_sort','selectionSort'],['insertion-sort','insertion_sort','insertionSort'],['merge-sort','merge_sort','mergeSort'],['quick-sort','quick_sort','quickSort'],['heap-sort','heap_sort','heapSort'],['counting-sort','counting_sort','countingSort']]){
+  const recursive=id==='quick-sort'||id==='merge-sort';
+  add(id,pyInput+`${python}(a${recursive?', 0, len(a)-1':''})\nassert a == [1,2,3,5,8,8]\n${python}([]${recursive?', 0, -1':''})`,javaInput+`${cls(id)}.${java}(a${recursive?',0,a.size()-1':''}); check(a.equals(Arrays.asList(1,2,3,5,8,8))); ${cls(id)}.${java}(new ArrayList<Integer>()${recursive?',0,-1':''});`);
+}
+add('linear-search','assert linear_search([1,2,2,4],2)==1\nassert linear_search([],3)==-1','check(C_linear_search.linearSearch(new int[]{1,2,2,4},2)==1); check(C_linear_search.linearSearch(new int[]{},3)==-1);');
+add('binary-search','assert binary_search([1,2,2,4],2) in [1,2]\nassert binary_search([],3)==-1','check(C_binary_search.binarySearch(new int[]{1,2,2,4},2)==1); check(C_binary_search.binarySearch(new int[]{},3)==-1);');
+add('lower-bound','assert lower_bound([1,2,2,4],2)==1\nassert lower_bound([1,2],9)==2','check(C_lower_bound.lowerBound(new int[]{1,2,2,4},2)==1); check(C_lower_bound.lowerBound(new int[]{1,2},9)==2);');
+add('upper-bound','assert upper_bound([1,2,2,4],2)==3\nassert upper_bound([],9)==0','check(C_upper_bound.upperBound(new int[]{1,2,2,4},2)==3); check(C_upper_bound.upperBound(new int[]{},9)==0);');
+add('gcd','assert gcd(84,30)==6\nassert gcd(7,0)==7','check(C_gcd.gcd(84,30)==6); check(C_gcd.gcd(7,0)==7);');
+add('fast-power','assert power(3,13,97)==31\nassert power(5,0,97)==1','check(C_fast_power.power(3,13,97)==31); check(C_fast_power.power(5,0,97)==1);');
+add('sieve','assert sieve(10)==[2,3,5,7]\nassert sieve(1)==[]','check(C_sieve.sieve(10).equals(Arrays.asList(2,3,5,7))); check(C_sieve.sieve(1).isEmpty());');
+add('prefix-sum','assert range_sum([1,2,3,4,5],1,3)==9','check(C_prefix_sum.rangeSum(new int[]{1,2,3,4,5},1,3)==9);');
+add('difference','assert range_add([1,2,3,4,5],1,3,2)==[1,4,5,6,5]','check(Arrays.equals(C_difference.rangeAdd(new int[]{1,2,3,4,5},1,3,2),new int[]{1,4,5,6,5}));');
+add('two-pointers','assert pair_sum([1,2,3,4,5],6)==[0,4]\nassert pair_sum([1,2],8)==[-1,-1]','check(Arrays.equals(C_two_pointers.pairSum(new int[]{1,2,3,4,5},6),new int[]{0,4})); check(Arrays.equals(C_two_pointers.pairSum(new int[]{1,2},8),new int[]{-1,-1}));');
+add('sliding-window','assert max_window_sum([1,2,3,4,5],3)==12\nassert max_window_sum([-5,-2,-3],2)==-5','check(C_sliding_window.maxWindowSum(new int[]{1,2,3,4,5},3)==12); check(C_sliding_window.maxWindowSum(new int[]{-5,-2,-3},2)==-5);');
+add('recurrence','assert fibonacci(10)==55\nassert fibonacci(0)==0','check(C_recurrence.fibonacci(10)==55); check(C_recurrence.fibonacci(0)==0);');
+add('knapsack','assert knapsack([2,3,4],[4,5,7],6)==11\nassert knapsack([2],[3],4)==3','check(C_knapsack.knapsack(new int[]{2,3,4},new int[]{4,5,7},6)==11); check(C_knapsack.knapsack(new int[]{2},new int[]{3},4)==3);');
+add('lis','assert lis([3,1,2,2,5])==3\nassert lis([])==0','check(C_lis.lis(new int[]{3,1,2,2,5})==3); check(C_lis.lis(new int[]{})==0);');
+add('lcs','assert lcs("ABCBDAB","BDCABA")==4\nassert lcs("","ABC")==0','check(C_lcs.lcs("ABCBDAB","BDCABA")==4); check(C_lcs.lcs("","ABC")==0);');
+add('interval-dp','assert merge_stones([1,2,3,4])==19\nassert merge_stones([])==0','check(C_interval_dp.mergeStones(new int[]{1,2,3,4})==19); check(C_interval_dp.mergeStones(new int[]{})==0);');
+add('interval-scheduling','assert select_intervals([[0,2],[1,4],[2,5],[5,7]])==3','check(C_interval_scheduling.selectIntervals(new int[][]{{0,2},{1,4},{2,5},{5,7}})==3);');
+add('interval-cover','assert cover([[0,3],[2,7],[6,10]],10)==3\nassert cover([[0,2],[3,5]],5)==-1','check(C_interval_cover.cover(new int[][]{{0,3},{2,7},{6,10}},10)==3); check(C_interval_cover.cover(new int[][]{{0,2},{3,5}},5)==-1);');
+add('optimal-merge','assert optimal_merge([1,2,3,4])==19\nassert optimal_merge([3])==0','check(C_optimal_merge.optimalMerge(new int[]{1,2,3,4})==19); check(C_optimal_merge.optimalMerge(new int[]{3})==0);');
+for(const [id,method,javaMethod]of [['naive-match','find_pattern','findPattern'],['kmp','kmp','kmp'],['rolling-hash','rolling_hash','rollingHash']])add(id,`assert ${method}("ABABABAC","ABAC")==4\nassert ${method}("A","AB")==-1\nassert ${method}("ABC","")==0`, `check(${cls(id)}.${javaMethod}("ABABABAC","ABAC")==4); check(${cls(id)}.${javaMethod}("A","AB")==-1); check(${cls(id)}.${javaMethod}("ABC","")==0);`);
+const hashes=new Map();let collision;
+for(let a=65;a<=90&&!collision;a++)for(let b=65;b<=90;b++){const value=String.fromCharCode(a,b),hash=(a*31+b)%101;if(hashes.has(hash)){collision=[hashes.get(hash),value];break;}hashes.set(hash,value);}
+specs.get('rolling-hash').python+=`\nassert rolling_hash(${JSON.stringify(collision[0])},${JSON.stringify(collision[1])})==-1`;
+specs.get('rolling-hash').java+=`check(C_rolling_hash.rollingHash(${JSON.stringify(collision[0])},${JSON.stringify(collision[1])})==-1);`;
+const pyAdj='[[1,2],[0,2],[0,1]]',javaAdj='Arrays.asList(Arrays.asList(1,2),Arrays.asList(0,2),Arrays.asList(0,1))';
+add('bfs',`assert bfs(${pyAdj},0)==[0,1,2]`,`check(C_bfs.bfs(${javaAdj},0).equals(Arrays.asList(0,1,2)));`);
+add('dfs',`order=[]\ndfs(0,${pyAdj},[False]*3,order)\nassert order==[0,1,2]`,`List<Integer> out=new ArrayList<>(); C_dfs.dfs(0,${javaAdj},new boolean[3],out); check(out.equals(Arrays.asList(0,1,2)));`);
+add('permutations','result=[]\npermute([1,2,3],[False]*3,[],result)\nassert len(result)==6 and len({tuple(x) for x in result})==6\nassert result[0]==[1,2,3]','List<List<Integer>> result=new ArrayList<>(); C_permutations.permute(new int[]{1,2,3},new boolean[3],new ArrayList<Integer>(),result); check(result.size()==6 && new HashSet<>(result).size()==6);');
+add('maze','assert maze([[0,0],[1,0]])==[(0,0),(0,1),(1,1)]\nassert maze([[0,1],[1,0]])==[]','List<int[]> path=C_maze.maze(new int[][]{{0,0},{1,0}}); check(path.size()==3 && Arrays.equals(path.get(2),new int[]{1,1})); check(C_maze.maze(new int[][]{{0,1},{1,0}}).isEmpty());');
+add('n-queens','solutions=[]\nqueens(0,[-1]*4,solutions)\nassert len(solutions)==2 and solutions[0]!=solutions[1]','int[] col=new int[4]; Arrays.fill(col,-1); List<int[]> solutions=new ArrayList<>(); C_n_queens.queens(0,col,solutions); check(solutions.size()==2 && !Arrays.equals(solutions.get(0),solutions.get(1)));');
+for(const [id,expected]of [['preorder',[1,2,4,5,3]],['inorder',[4,2,5,1,3]],['postorder',[4,5,2,3,1]],['level-order',[1,2,3,4,5]]]){
+  const c=cls(id),python='root=Node(1)\nroot.left=Node(2)\nroot.right=Node(3)\nroot.left.left=Node(4)\nroot.left.right=Node(5)\n';
+  const java=`${c}.Node root=new ${c}.Node(1); root.left=new ${c}.Node(2); root.right=new ${c}.Node(3); root.left.left=new ${c}.Node(4); root.left.right=new ${c}.Node(5);`;
+  add(id,python+(id==='level-order'?'out=level_order(root)':'out=[]\ntraverse(root,out)')+`\nassert out==${JSON.stringify(expected)}`,java+(id==='level-order'?`List<Integer> out=${c}.levelOrder(root);`:`List<Integer> out=new ArrayList<>(); ${c}.traverse(root,out);`)+`check(out.equals(Arrays.asList(${expected.join(',')})));`);
+}
+const weightedPy='[[(1,3),(2,1)],[(0,3),(2,1),(3,2)],[(0,1),(1,1),(3,6)],[(1,2),(2,6)]]';
+const weightedJava='Arrays.asList(Arrays.asList(new int[]{1,3},new int[]{2,1}),Arrays.asList(new int[]{0,3},new int[]{2,1},new int[]{3,2}),Arrays.asList(new int[]{0,1},new int[]{1,1},new int[]{3,6}),Arrays.asList(new int[]{1,2},new int[]{2,6}))';
+add('dijkstra',`assert dijkstra(${weightedPy},0)==[0,2,1,4]\nassert dijkstra([[(1,2)],[],[]],0)[2]==float('inf')`,`check(Arrays.equals(C_dijkstra.dijkstra(${weightedJava},0),new int[]{0,2,1,4})); check(C_dijkstra.dijkstra(Arrays.asList(Arrays.asList(new int[]{1,2}),Collections.<int[]>emptyList(),Collections.<int[]>emptyList()),0)[2]==1000000000);`);
+add('bellman-ford','assert bellman_ford(3,[(0,1,2),(1,2,-1)],0)==(False,[0,2,1])\nassert bellman_ford(3,[(0,1,1),(1,2,-2),(2,1,-2)],0)[0]','check(Arrays.equals(C_bellman_ford.bellmanFord(3,new int[][]{{0,1,2},{1,2,-1}},0).dist,new int[]{0,2,1})); check(C_bellman_ford.bellmanFord(3,new int[][]{{0,1,1},{1,2,-2},{2,1,-2}},0).negativeCycle);');
+add('floyd','assert floyd(3,[(0,1,2),(1,2,3)],True)[0][2]==5\nassert floyd(3,[(0,1,2),(1,2,3)],False)[2][0]==5','check(C_floyd.floyd(3,new int[][]{{0,1,2},{1,2,3}},true)[0][2]==5); check(C_floyd.floyd(3,new int[][]{{0,1,2},{1,2,3}},false)[2][0]==5);');
+add('topological-sort','assert topological_sort([[1],[2],[]])==[0,1,2]\nassert topological_sort([[1],[0]])==[]','check(C_topological_sort.topologicalSort(Arrays.asList(Arrays.asList(1),Arrays.asList(2),Collections.<Integer>emptyList())).equals(Arrays.asList(0,1,2))); check(C_topological_sort.topologicalSort(Arrays.asList(Arrays.asList(1),Arrays.asList(0))).isEmpty());');
+add('prim',`assert prim(${weightedPy})==4\nassert prim([[(1,2)],[(0,2)],[]])==-1`,`check(C_prim.prim(${weightedJava})==4); check(C_prim.prim(Arrays.asList(Arrays.asList(new int[]{1,2}),Arrays.asList(new int[]{0,2}),Collections.<int[]>emptyList()))==-1);`);
+add('kruskal','assert kruskal(4,[[0,1,3],[0,2,1],[2,1,1],[1,3,2],[2,3,6]])==4\nassert kruskal(3,[[0,1,2]])==-1','check(C_kruskal.kruskal(4,new int[][]{{0,1,3},{0,2,1},{2,1,1},{1,3,2},{2,3,6}})==4); check(C_kruskal.kruskal(3,new int[][]{{0,1,2}})==-1);');
+add('array','a=[1,2,3]\nedit_array(a,1,9,2)\nassert a==[1,9,3]','List<Integer> a=new ArrayList<>(Arrays.asList(1,2,3)); C_array.editArray(a,1,9,2); check(a.equals(Arrays.asList(1,9,3)));');
+for(const id of ['singly-linked-list','doubly-linked-list'])add(id,'p=demo([1,2,3],1,9)\nassert [p.value,p.next.value,p.next.next.value]==[1,9,3]'+(id==='doubly-linked-list'?'\nassert p.prev is None and p.next.prev is p':''),`${cls(id)}.Node p=${cls(id)}.demo(new int[]{1,2,3},1,9); check(p.value==1 && p.next.value==9 && p.next.next.value==3);`+(id==='doubly-linked-list'?'check(p.prev==null && p.next.prev==p);':''));
+add('circular-linked-list','assert josephus([1,2,3,4,5],2)==3','check(C_circular_linked_list.josephus(new int[]{1,2,3,4,5},2)==3);');
+for(const [id,expected]of [['stack',[7,3]],['queue',[3,7]],['circular-queue',[3,7]]])add(id,`assert demo([(1,3),(1,7),(0,0),(0,0),(0,0)])==${JSON.stringify(expected)}`,`check(${cls(id)}.demo(new int[][]{{1,3},{1,7},{0,0},{0,0},{0,0}}).equals(Arrays.asList(${expected.join(',')})));`);
+add('deque','assert demo([(0,3),(1,7),(2,0),(3,0)])==[3,7]','check(C_deque.demo(new int[][]{{0,3},{1,7},{2,0},{3,0}}).equals(Arrays.asList(3,7)));');
+for(const [id,method,args]of [['hash-chaining','chaining',[1,8,15]],['hash-probing','probing',[1,12,23]]])add(id,`assert ${method}(${JSON.stringify(args)},${args[2]})\nassert not ${method}(${JSON.stringify(args)},99)`,`check(${cls(id)}.${method}(new int[]{${args.join(',')}},${args[2]})); check(!${cls(id)}.${method}(new int[]{${args.join(',')}},99));`);
+add('binary-tree','root=build([1,2,3],0)\nassert root.value==1 and root.left.value==2 and root.right.value==3','C_binary_tree.Node root=C_binary_tree.build(new int[]{1,2,3},0); check(root.value==1 && root.left.value==2 && root.right.value==3);');
+add('bst','assert demo([3,1,4,2],2)\nassert not demo([3,1,4,2],9)','check(C_bst.demo(new int[]{3,1,4,2},2)); check(!C_bst.demo(new int[]{3,1,4,2},9));');
+add('avl','for values in [[30,20,10],[10,20,30],[30,10,20],[10,30,20]]:\n    root=demo(values)\n    assert root.value==20 and root.height==2 and root.left.value==10 and root.right.value==30','for(int[] values:new int[][]{{30,20,10},{10,20,30},{30,10,20},{10,30,20}}){C_avl.Node root=C_avl.demo(values); check(root.value==20 && root.height==2 && root.left.value==10 && root.right.value==30);}');
+add('trie','assert trie_demo(["CAT","CAR"],"CAR")\nassert not trie_demo(["CAT","CAR"],"CA")','check(C_trie.trieDemo(new String[]{"CAT","CAR"},"CAR")); check(!C_trie.trieDemo(new String[]{"CAT","CAR"},"CA"));');
+for(const [id,value,compare]of [['max-heap',9,'>='],['min-heap',0,'<=']])add(id,`a=demo([3,1,7,2],${value})\nassert sorted(a)==[1,2,3,7]\nassert all(a[(i-1)//2] ${compare} a[i] for i in range(1,len(a)))`,`List<Integer> a=${cls(id)}.demo(Arrays.asList(3,1,7,2),${value}); for(int i=1;i<a.size();i++)check(a.get((i-1)/2) ${compare} a.get(i)); List<Integer> sorted=new ArrayList<>(a); Collections.sort(sorted); check(sorted.equals(Arrays.asList(1,2,3,7)));`);
+add('adjacency-matrix','assert build(3,[(0,1),(1,2)])==[[0,1,0],[1,0,1],[0,1,0]]','check(Arrays.deepEquals(C_adjacency_matrix.build(3,new int[][]{{0,1},{1,2}}),new int[][]{{0,1,0},{1,0,1},{0,1,0}}));');
+add('adjacency-list','assert build(3,[(0,1),(1,2)])==[[1],[0,2],[1]]','check(C_adjacency_list.build(3,new int[][]{{0,1},{1,2}}).get(1).equals(Arrays.asList(0,2)));');
+add('disjoint-set','assert demo(4,[(0,1),(1,2)],0)==2','check(C_disjoint_set.demo(4,new int[][]{{0,1},{1,2}},0)==2);');
+add('fenwick','assert demo([1,2,3,4,5],3,4,4)==14','check(C_fenwick.demo(new int[]{1,2,3,4,5},3,4,4)==14);');
+add('segment-tree','assert demo([1,2,3,4,5,6],2,10,1,4)==21','check(C_segment_tree.demo(new int[]{1,2,3,4,5,6},2,10,1,4)==21);');
+const directory=path.join(root,'artifacts');fs.mkdirSync(directory,{recursive:true});
+const cases=originalItems.map(item=>{const test=specs.get(item.id);if(!test)throw new Error('Missing runtime example: '+item.id);return {id:item.id,code:L.codeVersions[item.id].python.code.join('\n'),test:test.python};});
+fs.writeFileSync(path.join(directory,'code-versions.json'),JSON.stringify(cases));
+const python=spawnSync(process.env.ALGOLAB_PYTHON||'python',[path.join(__dirname,'run-python-versions.py'),path.join(directory,'code-versions.json')],{encoding:'utf8',timeout:60000});
+if(python.status!==0){console.error(python.stderr||python.error);process.exit(1);}console.log(python.stdout.trim());
+let java='import java.util.*;\npublic class TeachingLanguages {\nstatic void check(boolean value){if(!value)throw new AssertionError();}\n';
+for(const item of originalItems)java+=`static class ${cls(item.id)} {\n${L.codeVersions[item.id].java.code.join('\n')}\n}\n`;
+java+='public static void main(String[] args) {\n';
+for(const item of originalItems)java+=`try { ${specs.get(item.id).java} } catch (Throwable error) { throw new AssertionError("${item.id}", error); }\n`;
+java+=`System.out.println("Java: compiled and executed all ${originalItems.length} teaching snippets.");\n}\n}`;
+fs.writeFileSync(path.join(directory,'TeachingLanguages.java'),java);
+for(const [command,args]of [[process.env.ALGOLAB_JAVAC||'javac',['-encoding','UTF-8','--release','8','TeachingLanguages.java']],[process.env.ALGOLAB_JAVA||'java',['-cp','.','TeachingLanguages']]]){
+  const result=spawnSync(command,args,{cwd:directory,encoding:'utf8',timeout:60000});
+  if(result.status!==0){console.error(result.stderr||result.error);process.exit(1);}if(result.stdout.trim())console.log(result.stdout.trim());
+}

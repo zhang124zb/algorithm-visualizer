@@ -1,0 +1,15 @@
+(function(L,C){
+  L.register('dfs-order',(o={})=>{
+    const g=o.graph||C.tree(),adj=L.adjacency(g),order=[],tin=g.nodes.map(()=>-1),tout=tin.slice(),t=C.trace('dfs-order',{graph:g,root:0},g),s=(l,msg,v={},active=[])=>t.step(l,msg,{order,tin,tout,...v},{...g,active,aux:[{label:'DFS 序（子树对应 [tin,tout)）',values:order}]} );
+    s('init','输入为连通无环树，从节点 0 开始，每个点只入序一次。');s('start','启动根节点的 DFS。');function dfs(u,parent){s('visit','进入一个新的递归调用。',{u,parent},[u]);tin[u]=order.length;order.push(u);s('enter','记录入点时间，并将节点加入序列。',{u,parent},[u]);for(const [v]of adj[u]){s('edge','查看相邻节点。',{u,v},[u,v]);s('recur','跳过父节点，递归遍历子树。',{u,v});if(v!==parent)dfs(v,u);}tout[u]=order.length;s('exit','子树遍历结束，记录半开区间右端。',{u,parent},[u]);}dfs(0,-1);s('return','节点 u 的子树为 order[tin[u]:tout[u]]。');return t.done([order,tin,tout]);
+  });
+  L.register('tree-diameter',(o={})=>{
+    const g=o.graph||C.tree(),adj=L.adjacency(g);let source=0,d=[];const t=C.trace('tree-diameter',{graph:g},g),s=(l,msg,v={},active=[])=>t.step(l,msg,{source,distance:d,...v},{...g,active,nodes:g.nodes.map(p=>({...p,badge:d[p.id]}))});
+    s('init','仅适用于连通无环的无权树，直径按边数计。');for(let pass=0;pass<2;pass++){s('pass',pass===0?'第一次 BFS 寻找一个直径端点。':'第二次从端点出发，寻找另一个端点。',{pass});d=g.nodes.map(()=>-1);const q=[source];d[source]=0;s('start','初始化本次 BFS。',{pass},[source]);while(q.length){s('loop','继续扩展队列。',{queue:q});const u=q.shift();s('pop','取出当前节点。',{u},[u]);for(const [v]of adj[u]){s('edge','检查树边。',{u,v},[u,v]);if(d[v]<0){d[v]=d[u]+1;q.push(v);}s('visit','首次访问时记录距离并入队。',{u,v},[v]);}}source=d.indexOf(Math.max(...d));s('far','取距离最远的节点。',{pass},[source]);}s('return','第二次 BFS 的最大距离就是树的直径。',{result:d[source]},[source]);return t.done(d[source]);
+  });
+  L.register('binary-lca',(o={})=>{
+    const g=o.graph||C.tree(),n=g.nodes.length,adj=L.adjacency(g),K=Math.floor(Math.log2(n))+1,up=Array.from({length:K},()=>Array(n).fill(0)),depth=Array(n).fill(-1),q=[];let u=o.u??L.rand(1,n-1),v=o.v??L.rand(1,n-1);
+    const t=C.trace('binary-lca',{graph:g,u,v,root:0},g),s=(l,msg,vars={},active=[])=>t.step(l,msg,{u,v,depth,...vars},{...g,active,table:L.matrix(up,[],{rowLabels:up.map((_,j)=>'2^'+j)})});
+    s('init','固定根节点 0，up[j][x] 表示节点 x 的 2^j 层祖先。');depth[0]=0;q.push(0);s('start','根的祖先约定为根自身。',{},[0]);while(q.length){const x=q.shift();s('bfs','按层确定深度与直接父节点。',{x},[x]);for(const [y]of adj[x]){if(depth[y]<0){depth[y]=depth[x]+1;up[0][y]=x;q.push(y);}s('parent','已访问节点不会重复加入。',{x,y},[y]);}}for(let j=1;j<K;j++){s('level','逐层建立倍增表。',{j});for(let x=0;x<n;x++){up[j][x]=up[j-1][up[j-1][x]];s('table','先跳一半，再跳另一半。',{j,x},[x]);}}if(depth[u]<depth[v])[u,v]=[v,u];s('swap','确保 u 的深度不小于 v。',{},[u,v]);for(let j=K-1;j>=0;j--){if(depth[u]-depth[v]>=(1<<j))u=up[j][u];s('align','按二进制跳跃，将深度对齐。',{j},[u,v]);}s('same','如果两点相同，这个点就是最近公共祖先。',{},[u,v]);if(u===v)return t.done(u);for(let j=K-1;j>=0;j--){s('loop','从最大的跳跃长度开始。',{j},[u,v]);if(up[j][u]!==up[j][v]){u=up[j][u];v=up[j][v];}s('jump','只有跳完仍不同才一起跳，避免跨过 LCA。',{j},[u,v]);}const result=up[0][u];s('return','此时两点的父节点就是 LCA。',{result},[result]);return t.done(result);
+  });
+})(AlgoLab,AlgoLab.competition);
