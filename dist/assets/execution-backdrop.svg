@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" fill="none">
+  <defs>
+    <linearGradient id="fade" x1="800" y1="0" x2="800" y2="1100" gradientUnits="userSpaceOnUse"><stop stop-color="#8993cf" stop-opacity=".32"/><stop offset=".5" stop-color="#7389c4" stop-opacity=".05"/><stop offset="1" stop-color="#8993cf" stop-opacity=".28"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#d0c9fb" stop-opacity=".2"/><stop offset="1" stop-color="#b9b2e4" stop-opacity="0"/></radialGradient>
+  </defs>
+  <path d="M32 0V1100M76 0V1100M125 0V1100M1490 0V1100M1532 0V1100M1575 0V1100" stroke="url(#fade)"/>
+  <g fill="#7791ba" opacity=".36" font-family="monospace" font-size="11" letter-spacing="13" style="writing-mode:vertical-rl">
+    <text x="28" y="18">01011001010100100110100110011010010</text><text x="57" y="260">1001010010101001101000101010</text>
+    <text x="102" y="650">01001110010100101100101</text><text x="1532" y="32">10100100101011001101010101</text>
+    <text x="1575" y="500">01001110010101011001001001010</text><text x="1490" y="785">10010101100101010</text>
+  </g>
+  <path d="M0 0H360L0 300M1600 0H1350L1600 250M0 1090L310 780M1600 1100L1310 810" stroke="#a8a8dc" stroke-opacity=".12"/>
+  <ellipse cx="40" cy="245" rx="180" ry="230" fill="url(#glow)"/>
+  <circle cx="1430" cy="735" r="180" fill="url(#glow)"/>
+  <path d="M0 245H145M40 160V345M1380 735H1480M1430 685V785" stroke="#a5a1d6" stroke-opacity=".12"/>
+  <g fill="#d1ceef" opacity=".2"><circle cx="430" cy="29" r="3"/><circle cx="1040" cy="92" r="2.5"/><circle cx="48" cy="815" r="5"/><circle cx="1490" cy="310" r="2"/></g>
+</svg>

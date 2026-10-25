@@ -129,7 +129,7 @@ print(result)`}
 `)}
   ];
   root.LabLanguages={
-    cpp:{name:'C++',file:'main.cpp',extension:'.cpp',input:'cin',output:'cout',examples:root.CppLabExamples,support:'C++ 为主。当前支持基础语法、数组、函数与递归，暂不支持 STL。'},
+    cpp:{name:'C++',file:'main.cpp',extension:'.cpp',input:'cin',output:'cout',examples:[...root.CppLabExamples,...(root.CppLabSTLExamples||[])],support:'C++ 教学模式 · 已接入 vector、string、queue、stack、pair、set、map、unordered_set、unordered_map；支持容量预留与桶数观察。'},
     python:{name:'Python',file:'main.py',extension:'.py',input:'input()',output:'print()',examples:python,support:'Python 3 教学兼容模式，支持列表、条件、循环、函数与递归；第三方包和部分新语法暂不支持。'},
     java:{name:'Java',file:'Main.java',extension:'.java',input:'Scanner',output:'System.out',examples:javaExamples,support:'Java 非商业教学模式，支持基本类型、数组、循环、static 方法与 Scanner；不包含完整 JVM 或集合库。'}
   };

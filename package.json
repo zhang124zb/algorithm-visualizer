@@ -6,6 +6,11 @@
   "scripts": {
     "generate": "node scripts/generate-pages.cjs",
     "check": "node scripts/check.cjs",
-    "preview": "node scripts/serve.cjs"
+    "preview": "node scripts/serve.cjs",
+    "lab:local": "node scripts/local-lab/server.cjs",
+    "lab:sandbox:build": "node scripts/local-lab/build-sandbox.cjs",
+    "check:local": "node scripts/verify-local-lab.cjs",
+    "check:sandbox": "node scripts/verify-sandbox.cjs",
+    "check:sandbox:access": "node scripts/verify-sandbox-access.cjs"
   }
 }

@@ -9,8 +9,12 @@ const {chromium}=require(pkg);
     page.on('pageerror',e=>errors.push(e.message));
     page.on('response',r=>{if(r.status()>=400)errors.push(r.status()+' '+r.url());});
     await page.goto(base);
-    assert.equal(await page.locator('#structure-grid .category-card').count(),8);
+    assert.equal(await page.locator('#structure-grid .category-card').count(),9);
     assert.equal(await page.locator('#algorithm-grid .category-card').count(),11);
+    assert.equal(await page.locator('a[data-group="stl"]').getAttribute('href'),'structures/stl/index.html');
+    await page.locator('#search-input').fill('STL');
+    assert.equal(await page.locator('.result-row').first().getAttribute('href'),'structures/stl/index.html');
+    await page.locator('#search-input').fill('');
     const groups=await page.evaluate(()=>AlgoLab.groups.map(g=>({path:g.section+'/'+g.id+'/index.html',entries:g.entries.map(x=>x.path)})));
     const items=await page.evaluate(()=>AlgoLab.foundationIds.map(id=>AlgoLab.item(id)));
     for(const g of groups){
@@ -19,6 +23,23 @@ const {chromium}=require(pkg);
       assert.deepEqual(links.map(x=>x.path),g.entries,g.path);
       assert.ok(links.every(x=>x.target==='_blank'&&['入门','常用提高','选学'].includes(x.level)),g.path);
     }
+    await page.goto(base+'/structures/stl/index.html');
+    assert.equal(await page.locator('article.stl-lesson').count(),12);
+    assert.equal(await page.locator('section.stl-group').count(),4);
+    assert.equal(await page.locator('.stl-principle-links a').count(),16);
+    assert.ok((await page.locator('.stl-code pre').first().textContent()).includes('std::vector<int>'));
+    assert.match(await page.locator('.stl-compatibility').textContent(),/基础操作/);
+    assert.equal(await page.locator('.stl-future-scope>a').count(),4);
+    await page.screenshot({path:path.resolve(__dirname,'../artifacts/stl-guide-desktop.png')});
+    await page.locator('.stl-index a[href="#stl-algorithms"]').click();
+    assert.match(page.url(),/#stl-algorithms$/);
+    await page.screenshot({path:path.resolve(__dirname,'../artifacts/stl-guide-algorithms.png')});
+    for(const width of [390,768,1024]){
+      await page.setViewportSize({width,height:844});await page.goto(base+'/structures/stl/index.html');
+      assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'STL guide overflow '+width);
+      if(width===390)await page.screenshot({path:path.resolve(__dirname,'../artifacts/stl-guide-mobile.png')});
+    }
+    await page.setViewportSize({width:1440,height:1000});
     await page.goto(base+'/structures/advanced/disjoint-set.html');
     assert.equal(await page.locator('.breadcrumb a').nth(2).textContent(),'并查集');
     assert.match(await page.locator('.breadcrumb a').nth(2).getAttribute('href'),/structures\/sets\/index.html$/);

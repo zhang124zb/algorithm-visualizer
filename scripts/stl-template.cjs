@@ -1,0 +1,179 @@
+module.exports=({E,header,footer,icon})=>{
+  const groups=[
+    {id:'stl-sequence',number:'01',title:'顺序容器',description:'先学会存放一段数据，再区分下标访问与两端操作。',lessons:[
+      {id:'stl-vector',title:'vector · 动态数组',tag:'连续存储',summary:'适合数量会变化、需要按下标访问的数据。size() 是已有元素个数，capacity() 是不重新分配内存时可容纳的元素个数；提前 reserve() 可以减少扩容次数。',usage:'a[i] / size() / push_back() / pop_back() / reserve(n) / capacity() / resize(n) / shrink_to_fit()',cost:'访问 O(1)；尾部追加均摊 O(1)；中间插入、删除 O(n)；reserve 和触发重分配的缩容最多线性搬移已有元素。',code:`#include <vector>
+void example() {
+    std::vector<int> a;
+    a.reserve(8);          // size() == 0，capacity() >= 8
+    a.push_back(3);
+    a.push_back(1);        // {3, 1}
+    a.resize(4);           // {3, 1, 0, 0}，创建两个元素
+    a[1] = 8;
+    a.pop_back();          // {3, 8, 0}
+    a.resize(2);           // {3, 8}，删除尾部元素
+    a.shrink_to_fit();     // 请求缩容，实际容量不保证等于 2
+    bool enough = a.capacity() >= a.size(); // true
+}`,pitfall:'reserve(n) 不创建元素、不改变 size()，也不把 n 设为元素上限；以后仍可继续追加。下标只能访问 size() 范围内的元素。resize(n) 才会增删元素，int 新元素默认为 0；缩小 size() 不等于释放容量。shrink_to_fit() 是非强制缩容请求，实际容量和增长策略由标准库实现决定。重分配会使已有迭代器和引用失效。',links:[['structures/linear/dynamic-array.html','动态数组扩容原理']]},
+      {id:'stl-string',title:'string · 字符串',tag:'常用标准库',summary:'把字符串看作可变的字符序列。可以拼接、取子串、按字典序比较；和 vector 类似，需要区分已有字符数量 size() 与预留容量 capacity()。',usage:'size() / += / substr() / find() / reserve(n) / capacity() / resize(n) / shrink_to_fit()',cost:'下标与容量查询 O(1)；取长度为 k 的子串 O(k)；比较可能逐字符扫描；预留和缩容可能重新分配并复制字符。',code:`#include <string>
+void example() {
+    std::string s = "algo";
+    s.reserve(32);          // size() 仍为 4，capacity() >= 32
+    s += "rithm";            // "algorithm"
+    std::string part = s.substr(0, 4); // "algo"
+    s.resize(12, '!');      // "algorithm!!!"
+    s.resize(4);            // "algo"，截去尾部字符
+    s.shrink_to_fit();      // 非强制缩容请求
+    bool enough = s.capacity() >= s.size(); // true
+    auto pos = s.find("go"); // 2
+    bool found = pos != std::string::npos;
+    bool before = std::string("abc") < "abd"; // true
+}`,pitfall:'reserve(n) 只请求容量，不创建字符、不改变 size()、不限制后续长度。resize(n) 增长时默认补空字符 \\0，也可用 resize(n, ch) 指定字符；缩短时删除尾部。shrink_to_fit() 不保证释放内存或使 capacity() 等于 size()，短字符串优化也会影响容量。substr 的第二个参数是长度；find 找不到时返回 string::npos。UTF-8 中文的字节下标不等于汉字序号。',links:[['algorithms/strings/string-count.html','字符串遍历与统计'],['algorithms/strings/string-compare.html','字典序比较原理']]},
+      {id:'stl-deque',title:'deque · 双端队列',tag:'两端增删',summary:'既能按下标访问，又能在队首和队尾添加、移除元素。常用于维护窗口中的候选位置。',usage:'push_front() / push_back() / front() / back()',cost:'下标访问 O(1)；两端插入、删除 O(1)；中间插入、删除 O(n)。',code:`#include <deque>
+void example() {
+    std::deque<int> d{2, 3};
+    d.push_front(1);        // {1, 2, 3}
+    d.push_back(4);         // {1, 2, 3, 4}
+    if (!d.empty()) d.pop_front(); // {2, 3, 4}
+    int last = d.back();    // 4
+}`,pitfall:'deque 不保证所有元素连续存储，不能当作一整块数组传给需要连续内存的接口。访问 front()、back() 或弹出之前先确认非空。',links:[['structures/stack-queue/deque.html','双端队列操作原理']]}
+    ]},
+    {id:'stl-adapters',number:'02',title:'容器适配器',description:'接口限制了访问方式：栈后进先出，队列先进先出，优先队列先取最值。',lessons:[
+      {id:'stl-stack',title:'stack · 栈',tag:'后进先出',summary:'只处理栈顶元素。适合括号匹配、回退和模拟递归过程。',usage:'push() / top() / pop() / empty()',cost:'默认底层容器下，压栈、访问栈顶、弹栈均为 O(1)。',code:`#include <stack>
+void example() {
+    std::stack<int> s;
+    s.push(10);
+    s.push(20);
+    if (!s.empty()) {
+        int value = s.top(); // 20
+        s.pop();            // 剩余 10
+    }
+}`,pitfall:'pop() 只删除元素，不返回被删除的值。想取值时先 top() 再 pop()；空栈不能 top() 或 pop()。stack 没有下标和迭代器接口。',links:[['structures/stack-queue/stack.html','入栈与出栈原理']]},
+      {id:'stl-queue',title:'queue · 队列',tag:'先进先出',summary:'队尾进入、队首离开。常用于 BFS，让较早进入队列的任务先被处理。',usage:'push() / front() / back() / pop()',cost:'默认底层容器下，入队、访问队首、出队均为 O(1)。',code:`#include <queue>
+void example() {
+    std::queue<int> q;
+    q.push(10);
+    q.push(20);
+    if (!q.empty()) {
+        int value = q.front(); // 10
+        q.pop();              // 剩余 20
+    }
+}`,pitfall:'pop() 不返回元素；front()、back() 和 pop() 都要求队列非空。queue 不能直接用下标访问或范围 for 遍历。',links:[['structures/stack-queue/queue.html','入队与出队原理']]},
+      {id:'stl-priority-queue',title:'priority_queue · 优先队列',tag:'先取最值',summary:'默认 top() 是最大值；指定 greater<int> 可以改为最小值优先。它只保证顶部优先，整体不一定有序。',usage:'push() / top() / pop() / empty()',cost:'top() 为 O(1)；插入、删除堆顶 O(log n)。',code:`#include <queue>
+#include <vector>
+#include <functional>
+void example() {
+    std::priority_queue<int> hi;
+    std::priority_queue<int, std::vector<int>,
+                        std::greater<int>> lo;
+    for (int x : {4, 1, 7}) { hi.push(x); lo.push(x); }
+    int largest = hi.top();  // 7
+    int smallest = lo.top(); // 1
+}`,pitfall:'不能通过下标或迭代器遍历 priority_queue，也不能直接修改堆顶元素。top()、pop() 之前检查 empty()；比较规则不要写成小于等于。',links:[['structures/heaps/max-heap.html','大根堆原理'],['structures/heaps/min-heap.html','小根堆原理']]}
+    ]},
+    {id:'stl-associative',number:'03',title:'集合、映射与组合数据',description:'需要去重时用集合，需要按键保存信息时用映射；pair 把两项信息放在一起。',lessons:[
+      {id:'stl-set-map',title:'set / map · 有序关联容器',tag:'按键有序',summary:'set 保存不重复的键；map 保存键值对，同一个键只对应一个值。默认按键的升序遍历。',usage:'insert() / find() / erase() / count()',cost:'按键查找、插入、删除 O(log n)。',code:`#include <set>
+#include <map>
+void example() {
+    std::set<int> seen{3, 1, 3}; // {1, 3}
+    seen.insert(2);              // {1, 2, 3}
+    bool exists = seen.find(2) != seen.end();
+    std::map<int, int> count;
+    for (int x : {3, 1, 3}) ++count[x]; // 1→1, 3→2
+    auto it = count.find(9);     // end()，不会插入 9
+}`,pitfall:'set/map 没有 reserve()、capacity() 或 resize()，不能像 vector 一样预留容量。map[key] 在键不存在时会插入默认值。只想查询时用 find()；不能解引用 end()。set 中的键、map 中键值对的键不能直接改写。',links:[['structures/hash/ordered-set.html','有序集合操作示意'],['structures/hash/ordered-map.html','有序映射操作示意']]},
+      {id:'stl-unordered',title:'unordered_set / unordered_map',tag:'哈希关联容器',summary:'分别用于无序去重和按键存值。bucket_count() 是桶数，load_factor() 是元素数与桶数之比，max_load_factor() 控制自动扩桶的负载阈值。',usage:'insert() / count() / erase() / reserve(n) / rehash(n) / bucket_count() / load_factor() / max_load_factor()',cost:'普通按键查找、插入、删除平均 O(1)，最坏 O(n)；rehash 平均 O(n)、最坏 O(n²)，reserve 也可能触发重哈希。',code:`#include <unordered_set>
+#include <unordered_map>
+void example() {
+    std::unordered_set<int> seen;
+    seen.max_load_factor(0.75f); // 先定阈值，再预留
+    seen.reserve(100);           // 按预计元素数预留桶
+    seen.insert(3);
+    seen.insert(1);
+    seen.insert(3);              // size() == 2
+    bool found = seen.count(3) != 0; // true
+    seen.rehash(200);            // 按桶数请求重哈希
+    bool bucketsReady = seen.bucket_count() >= 200;
+    float density = seen.load_factor();
+    float limit = seen.max_load_factor();
+
+    std::unordered_map<int, int> freq;
+    freq.max_load_factor(0.75f);
+    freq.reserve(100);           // 插入前预留，size() 仍为 0
+    ++freq[3];
+    ++freq[1];
+    ++freq[3];                   // 1→1，3→2
+    freq.rehash(200);
+    bool mapBucketsReady = freq.bucket_count() >= 200;
+    float mapDensity = freq.load_factor();
+}`,pitfall:'reserve(n) 按预计元素个数安排桶，rehash(n) 按至少 n 个桶请求重哈希，还须满足当前元素数与负载阈值；二者都不创建元素、不设元素上限。哈希 reserve 预留的是桶，不是提前分配所有元素节点，也不能消除碰撞或保证程序不超时。降低 max_load_factor() 后可再 reserve/rehash 调整桶数。遍历顺序未指定；rehash 使迭代器失效。unordered_map[key] 在键不存在时会插入默认值。',links:[['structures/hash/hash-set.html','哈希集合原理示意'],['structures/hash/hash-map.html','哈希映射原理示意']]},
+      {id:'stl-pair',title:'pair · 两项信息的组合',tag:'常用工具',summary:'常用来表示坐标、边或“数值与下标”。first、second 分别访问两项；C++17 可以用结构化绑定拆开。',usage:'first / second / 结构化绑定',cost:'操作的代价取决于两项数据的类型；两个整数的访问、比较为 O(1)。',code:`#include <utility>
+#include <vector>
+#include <algorithm>
+void example() {
+    std::pair<int, int> point{2, 5};
+    auto [x, y] = point; // x=2，y=5；这是复制
+    std::vector<std::pair<int, int>> a{{2, 1}, {1, 9}, {1, 3}};
+    std::sort(a.begin(), a.end()); // {1,3}, {1,9}, {2,1}
+    auto &[first, second] = point;
+    second = 8; // 引用绑定，point 变为 {2,8}
+}`,pitfall:'pair 默认先比较 first，相等时再比较 second。auto [x, y] 得到副本；需要修改原对象时用 auto& [x, y]，并注意引用对应对象的生命周期。',links:[]}
+    ]},
+    {id:'stl-algorithms',number:'04',title:'算法与迭代器',description:'begin() 指向第一个元素，end() 指向尾后位置；算法通常处理左闭右开的 [first, last) 区间。',lessons:[
+      {id:'stl-sort-reverse',title:'sort / reverse · 排序与翻转',tag:'范围操作',summary:'sort 默认升序排列；reverse 把指定区间整体倒过来。传入 begin()、end() 可以处理整个容器。',usage:'sort(first, last) / reverse(first, last)',cost:'sort 为 O(n log n) 次比较；reverse 为 O(n)。',code:`#include <vector>
+#include <algorithm>
+void example() {
+    std::vector<int> a{4, 1, 3, 2};
+    std::sort(a.begin(), a.end());    // {1, 2, 3, 4}
+    std::reverse(a.begin(), a.end()); // {4, 3, 2, 1}
+    std::sort(a.begin(), a.end(), [](int x, int y) {
+        return x > y; // 严格的大于，降序
+    });
+}`,pitfall:'自定义比较应满足严格弱序，不要使用 <= 或 >=。std::sort 需要随机访问迭代器，不能直接对 set、map、list 调用；关联容器的键也不能被这样改排。',links:[['algorithms/sorting/quick-sort.html','快速排序原理（非 std::sort 实现）']]},
+      {id:'stl-bounds',title:'lower_bound / upper_bound',tag:'有序区间查边界',summary:'在升序序列中，lower_bound 找第一个不小于目标的位置，upper_bound 找第一个大于目标的位置。',usage:'lower_bound(first, last, value) / upper_bound(...)',cost:'对 vector 这样的随机访问范围，时间为 O(log n)。',code:`#include <vector>
+#include <algorithm>
+void example() {
+    std::vector<int> a{1, 2, 2, 4}; // 先保证升序
+    auto left = std::lower_bound(a.begin(), a.end(), 2);
+    auto right = std::upper_bound(a.begin(), a.end(), 2);
+    auto index = left - a.begin(); // 1
+    auto count = right - left;     // 2
+    bool found = left != a.end() && *left == 2;
+}`,pitfall:'本页用法要求区间已按相同规则升序排列。找不到边界时可能返回 end()，它可以比较、不能解引用。对 set/map 优先用容器自己的 lower_bound()、upper_bound() 成员。',links:[['algorithms/search/lower-bound.html','左边界二分原理'],['algorithms/search/upper-bound.html','右边界二分原理']]},
+      {id:'stl-unique',title:'unique + erase · 排序去重',tag:'组合用法',summary:'unique 将相邻的重复元素合并到前部，返回新的逻辑结尾。再 erase 才会真正缩短容器。',usage:'sort → unique → erase',cost:'unique 与尾部 erase 各为 O(n)；加上排序整体 O(n log n)。',code:`#include <vector>
+#include <algorithm>
+void example() {
+    std::vector<int> a{3, 1, 3, 2, 1};
+    std::sort(a.begin(), a.end()); // {1, 1, 2, 3, 3}
+    auto newEnd = std::unique(a.begin(), a.end());
+    a.erase(newEnd, a.end());     // {1, 2, 3}
+    // 也可合写：a.erase(std::unique(a.begin(), a.end()), a.end());
+}`,pitfall:'unique 只处理相邻重复值，不会自动排序，也不会修改 size()。newEnd 之后到原 end() 之前的值不应当作去重结果；空数组也可以使用这套组合。',links:[['extensions/competition/foundations/compression.html','排序去重在离散化中的应用']]}
+    ]}
+  ];
+  const firstBatch=new Set(['stl-vector','stl-string','stl-stack','stl-queue','stl-set-map','stl-unordered','stl-pair']);
+  const renderLesson=(lesson,index)=>`<article class="stl-lesson" id="${lesson.id}">
+    <div class="stl-lesson-heading"><span class="stl-lesson-number" aria-hidden="true">${String(index+1).padStart(2,'0')}</span><div><span class="stl-lesson-tag">${E(lesson.tag)}</span><h3>${E(lesson.title)}</h3></div></div>
+    <span class="stl-lab-status ${firstBatch.has(lesson.id)?'is-current':'is-reserved'}">${firstBatch.has(lesson.id)?'本批接入 · 基础操作':'后续预留'}</span>
+    <p class="stl-summary">${E(lesson.summary)}</p>
+    <dl class="stl-facts"><div><dt>常用接口</dt><dd><code>${E(lesson.usage)}</code></dd></div><div><dt>操作代价</dt><dd>${E(lesson.cost)}</dd></div></dl>
+    <div class="stl-code"><div class="stl-code-heading"><span>${icon('code')}固定 C++17 示例</span><span>头文件 + 函数片段</span></div><pre tabindex="0" aria-label="${E(lesson.title)}的 C++ 教学代码"><code>${E(lesson.code)}</code></pre></div>
+    <p class="stl-pitfall"><b>注意</b>${E(lesson.pitfall)}</p>
+    ${lesson.links.length?`<div class="stl-principle-links"><span>关联原理演示</span>${lesson.links.map(([path,title])=>`<a href="../../${path}" target="_blank" rel="noopener">${E(title)} ↗</a>`).join('')}</div>`:''}
+  </article>`;
+  let lessonIndex=0;
+  return `${header('../../')}
+<main class="wrap stl-main">
+  <nav class="breadcrumb" aria-label="面包屑"><a href="../../index.html">主页</a><span>/</span><a href="../../index.html#structures">数据结构</a><span>/</span>STL 标准模板库</nav>
+  <div class="category-hero stl-hero"><div class="eyebrow">C++ STANDARD LIBRARY</div><h1>STL 标准模板库</h1><p>把学过的数据结构，变成竞赛中用得顺手的 C++ 工具。</p><div class="stl-hero-meta"><span>4 组学习内容</span><span>12 个知识条目</span><span>C++17 固定教学示例</span></div></div>
+  <section class="stl-intro" aria-labelledby="stl-intro-title"><div class="stl-section-heading"><div><h2 id="stl-intro-title">先把三个角色分清楚</h2><p>STL 的核心是容器、算法与迭代器。本专题也包括竞赛常用的 string、pair 等标准库工具。</p></div><span class="badge blue">基础入门 · C++ 优先</span></div><div class="stl-concepts">
+    <article><span aria-hidden="true">[ ]</span><h3>容器：保存数据</h3><p>vector 保存一列元素，set 去重，map 把键和值关联起来。按需要的操作选择容器。</p></article>
+    <article><span aria-hidden="true">ƒ</span><h3>算法：处理一个区间</h3><p>sort 排序，reverse 翻转，lower_bound 查边界。很多算法可以复用于不同的数据范围。</p></article>
+    <article><span aria-hidden="true">↦</span><h3>迭代器：定位元素</h3><p>begin() 到 end() 表示左闭右开的范围。end() 是尾后位置；空容器的 begin() 等于 end()，都不能解引用。</p></article>
+  </div></section>
+  <aside class="stl-compatibility" aria-labelledby="stl-compatibility-title">${icon('code')}<div><h2 id="stl-compatibility-title">教学示例与实验室支持范围</h2><p>浏览器代码实验室本批接入 <code>vector</code>、<code>string</code>、<code>queue</code>、<code>stack</code>、<code>pair</code>、<code>set</code>、<code>map</code>、<code>unordered_set</code>、<code>unordered_map</code> 的基础操作。vector/string 可观察长度与预留容量；哈希容器可观察桶数与负载。先从实验室的内置示例运行，再按示例支持的类型与接口修改。</p><p>实验室的容量增长、缩容与哈希桶数采用教学模型，实际 C++ 标准库的容量和桶数可能不同；模型不模拟真实节点分配或性能，也不承诺预留后不会碰撞或超时。unordered 容器本批不支持迭代器、<code>auto</code>、范围 for 或自定义哈希。</p><p>下方保留完整 C++17 教学片段，用于说明标准写法。其中的 <code>auto</code>、范围 for、结构化绑定、lambda 与迭代器用法可能超出浏览器本批范围；set/map 也先支持基础按键操作，不能把完整教学片段直接视为浏览器可运行示例。本机 Docker 模式可编译常用 STL，容器变量与动画展示仍有范围限制。</p><div class="stl-future-scope" aria-label="后续预留功能"><span>后续预留</span><a href="#stl-sort-reverse">reverse</a><a href="#stl-sort-reverse">sort</a><a href="#stl-priority-queue">priority_queue</a><a href="#stl-deque">deque</a></div><a href="../../extensions/code-lab/index.html" target="_blank" rel="noopener">打开代码实验室 ↗</a></div></aside>
+  <nav class="stl-index" aria-label="STL 学习分组">${groups.map(group=>`<a href="#${group.id}"><span>${group.number}</span><b>${E(group.title)}</b><small>3 个条目 ↓</small></a>`).join('')}</nav>
+  <p class="stl-principle-note">下方链接复用现有的数据结构与算法动画，帮助理解操作原理；动画不代表某个标准库版本的内部实现。</p>
+  ${groups.map(group=>`<section class="stl-group" id="${group.id}" aria-labelledby="${group.id}-title"><div class="stl-group-heading"><span>${group.number}</span><div><h2 id="${group.id}-title">${E(group.title)}</h2><p>${E(group.description)}</p></div><a href="#stl-intro-title">回到导览 ↑</a></div><div class="stl-lesson-grid">${group.lessons.map(lesson=>renderLesson(lesson,lessonIndex++)).join('')}</div></section>`).join('')}
+  <aside class="notice stl-checklist">${icon('check')}<span>使用前检查：容器非空吗？下标有效吗？区间有序吗？迭代器还有效吗？复杂度能承受当前数据规模吗？</span></aside>
+</main>${footer()}`;
+};

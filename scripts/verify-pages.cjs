@@ -9,4 +9,11 @@ for(const file of files){const text=fs.readFileSync(file,'utf8');if(file.endsWit
 const catalog=vm.createContext({});
 for(const file of ['core','catalog'])vm.runInContext(fs.readFileSync(path.join(root,'assets/js',file+'.js'),'utf8'),catalog);
 assert.equal(pages,catalog.AlgoLab.allItems.length+catalog.AlgoLab.allGroups.length+3);
+const stl=fs.readFileSync(path.join(root,'structures/stl/index.html'),'utf8');
+assert.equal([...stl.matchAll(/class="stl-lesson"/g)].length,12,'STL lesson count');
+assert.equal([...stl.matchAll(/class="stl-group"/g)].length,4,'STL learning groups');
+assert.equal([...stl.matchAll(/固定 C\+\+17 示例/g)].length,12,'STL examples must be present');
+assert.ok(stl.includes('&lt;vector&gt;'),'C++ template/header characters must be HTML escaped');
+const stlIds=[...stl.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(new Set(stlIds).size,stlIds.length);
+for(const match of stl.matchAll(/href="#([^"]+)"/g))assert.ok(stlIds.includes(match[1]),'Missing STL anchor '+match[1]);
 console.log(`Verified ${pages} HTML pages, ${links} local resource/navigation links and all JavaScript syntax.`);

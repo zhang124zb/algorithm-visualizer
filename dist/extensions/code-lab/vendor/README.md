@@ -4,6 +4,8 @@
 
 这是 C++ 教学子集解释器，不是完整的标准 C++ 编译器。支持范围见实验室页面。
 
+`../engine.js` 提供 `bits/stdc++.h` 兼容头，聚合已有的 `iostream`、`cmath`、`cctype`、`cstring`、`iomanip`，保留原代码及回放行号，并对重复头文件与 C 风格别名去重。STL 教学子集由 `../stl.js` 独立适配 vector、string、queue、stack、pair、set、map、unordered_set、unordered_map；容量/桶数为教学模型，支持预留和观察，不复刻真实内存分配与哈希布局；不引入宿主能力或修改供应商包。修改它后运行 `npm run check` 和浏览器实验室验证。
+
 ## 重建
 
 仅开发者更新供应商包时需要 Node.js 和临时构建工具，正常使用网站不需要安装任何依赖。在项目根目录执行：

@@ -58,6 +58,8 @@
   groups.sort((a,b)=>order.indexOf(a[1])-order.indexOf(b[1]));
   const sectionNumbers={structures:0,algorithms:0};
   L.groups = groups.map(([section,id,title,number,description,items]) => ({section,id,title,number:String(++sectionNumbers[section]).padStart(2,'0'),description,items:items.map(([id,title,description,complexity])=>({id,title,description,complexity}))}));
+  L.guideGroups=[{section:'structures',id:'stl',title:'STL 标准模板库',number:'09',description:'从 vector、string 到 stack、queue、set 与 map，学习 C++ 常用容器和算法。',guide:true,tags:['vector / string','stack / queue','set / map'],items:[],entries:[]}];
+  L.catalogGroups=[...L.groups.filter(g=>g.section==='structures'),...L.guideGroups,...L.groups.filter(g=>g.section==='algorithms')];
   L.foundationIds = [...Object.values(additions).flat().map(x=>x[0]),'dsu-size','enumeration','simulation','recursion','divide-conquer'];
   L.items = L.groups.flatMap(group => group.items.map(item => ({...item,group:group.id,groupTitle:group.title,section:group.section,path:group.section+'/'+group.id+'/'+item.id+'.html'})));
   const competition = [
@@ -88,7 +90,7 @@
   ];
   L.competitionGroups = competition.map(([id,title,description,items],i)=>({section:'extensions/competition',id,title,description,number:String(i+1).padStart(2,'0'),items:items.map(([id,title,description,complexity])=>({id,title,description,complexity}))}));
   L.competitionItems = L.competitionGroups.flatMap(group=>group.items.map(item=>({...item,group:group.id,groupTitle:group.title,section:group.section,path:group.section+'/'+group.id+'/'+item.id+'.html'})));
-  L.allGroups = [...L.groups,...L.competitionGroups];
+  L.allGroups = [...L.catalogGroups,...L.competitionGroups];
   L.allItems = [...L.items,...L.competitionItems];
   const optional=new Set(['avl','manacher','mo-distinct','convex-hull','binary-lca','interval-dp']);
   for(const item of L.allItems)item.level=optional.has(item.id)?'选学':item.section==='extensions/competition'||['dsu-size','pruning','memo-search','grid-paths','grid-min-path','dijkstra','bellman-ford','floyd','fenwick','segment-tree','kmp'].includes(item.id)?'常用提高':'入门';
@@ -110,6 +112,8 @@
     const first=firstEntries[group.id];
     group.entries.sort((a,b)=>(first.includes(a.id)?first.indexOf(a.id):first.length)-(first.includes(b.id)?first.indexOf(b.id):first.length));
   }
+  L.guideGroups[0].entries=['dynamic-array','string-count','string-compare','stack','queue','deque','max-heap','min-heap','ordered-set','ordered-map','hash-set','hash-map','lower-bound','upper-bound','quick-sort','compression'].map(id=>L.allItems.find(x=>x.id===id));
+  L.searchItems=[...L.allItems,...L.guideGroups.map(g=>({id:g.id,title:g.title,description:g.description,groupTitle:'数据结构 · C++ 专题',path:g.section+'/'+g.id+'/index.html'}))];
   const prerequisites={
     'dynamic-array':['array'],'ordered-set':['array'],'ordered-map':['ordered-set'],'hash-set':['hash-chaining'],'hash-map':['hash-set'],
     'dsu-size':['disjoint-set'],enumeration:['array'],simulation:['queue'],recursion:['stack'],'divide-conquer':['recursion'],

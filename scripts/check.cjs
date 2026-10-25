@@ -4,4 +4,5 @@ require('./verify-languages.cjs');
 require('./verify-competition.cjs');
 require('./verify-foundations.cjs');
 require('./verify-code-lab.cjs');
+require('./verify-code-lab-stl.cjs');
 require('./verify-lab-languages.cjs');
