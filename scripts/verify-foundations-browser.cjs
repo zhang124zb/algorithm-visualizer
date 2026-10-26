@@ -9,7 +9,7 @@ const {chromium}=require(pkg);
     page.on('pageerror',e=>errors.push(e.message));
     page.on('response',r=>{if(r.status()>=400)errors.push(r.status()+' '+r.url());});
     await page.goto(base);
-    assert.equal(await page.locator('#structure-grid .category-card').count(),9);
+    assert.equal(await page.locator('#structure-grid .category-card').count(),10);
     assert.equal(await page.locator('#algorithm-grid .category-card').count(),11);
     assert.equal(await page.locator('a[data-group="stl"]').getAttribute('href'),'structures/stl/index.html');
     await page.locator('#search-input').fill('STL');
@@ -49,6 +49,7 @@ const {chromium}=require(pkg);
     const scene=()=>page.locator('#stage').evaluate(el=>{
       const copy=el.cloneNode(true),a=copy.querySelector('.array-stage');
       if(a)for(const cell of [...a.querySelectorAll('.array-cell')].sort((x,y)=>parseFloat(x.style.left)-parseFloat(y.style.left)))a.append(cell);
+      for(const node of copy.querySelectorAll('[style=""]'))node.removeAttribute('style');
       return copy.innerHTML;
     });
     for(const item of items){

@@ -51,7 +51,7 @@ recurse|        permute(a, used, path, result);
 undo|        path.pop_back();
 unmark|        used[i] = false;
     }
-}`,{values:a},L.array(a));const s=(l,m,i=-1)=>t.step(l,m,{i,path:path.slice(),used:used.slice(),已生成:result.length},L.array(a,i>=0?[i]:[],{found:used.flatMap((x,j)=>x?[j]:[]),aux:[{label:'当前排列',values:path},{label:'最近生成的排列',values:result.slice(-1).flat()}]}));function dfs(){s('complete','检查是否已选满所有位置。');if(path.length===a.length){result.push(path.slice());s('save','保存一组完整排列。');s('return','返回上一层，继续尝试其他选择。');return;}for(let i=0;;i++){s('loop','尝试把一个未使用的元素放到下个位置。',i);if(i>=a.length)break;s('skip','已经使用的元素不能重复选择。',i);if(used[i])continue;used[i]=true;s('mark','标记当前元素已使用。',i);path.push(a[i]);s('choose','将当前元素加入排列。',i);s('recurse','递归填写下一个位置。',i);dfs();path.pop();s('undo','撤销本次选择，移除最后一个元素。',i);used[i]=false;s('unmark','恢复可用状态，准备其他分支。',i);}}dfs();return t.done(result,`共生成 ${result.length} 组排列。`);
+}`,{values:a},L.array(a));const s=(l,m,i=-1)=>t.step(l,m,{i,path:path.slice(),used:used.slice(),已生成:result.length},L.array(a,i>=0?[i]:[],{pointers:i>=0?{i}:{},found:used.flatMap((x,j)=>x?[j]:[]),aux:[{label:'当前排列',values:path},{label:'最近生成的排列',values:result.slice(-1).flat()}]}));function dfs(){s('complete','检查是否已选满所有位置。');if(path.length===a.length){result.push(path.slice());s('save','保存一组完整排列。');s('return','返回上一层，继续尝试其他选择。');return;}for(let i=0;;i++){s('loop','尝试把一个未使用的元素放到下个位置。',i);if(i>=a.length)break;s('skip','已经使用的元素不能重复选择。',i);if(used[i])continue;used[i]=true;s('mark','标记当前元素已使用。',i);path.push(a[i]);s('choose','将当前元素加入排列。',i);s('recurse','递归填写下一个位置。',i);dfs();path.pop();s('undo','撤销本次选择，移除最后一个元素。',i);used[i]=false;s('unmark','恢复可用状态，准备其他分支。',i);}}dfs();return t.done(result,`共生成 ${result.length} 组排列。`);
   });
   L.register('maze',(options={})=>{
     const rows=5,cols=6,grid=options.grid?.map(r=>r.slice())||Array.from({length:rows},(_,r)=>Array.from({length:cols},(_,c)=>r===0||c===cols-1?0:Math.random()<.27?1:0));const n=grid.length,m=grid[0].length,q=[],visited=Array.from({length:n},()=>Array(m).fill(false)),parent={},path=[];
@@ -115,7 +115,7 @@ remove|        col[row] = -1;
     if(!Number.isInteger(target)||target<0||a.some(x=>!Number.isInteger(x)||x<0))throw new Error('此剪枝演示要求数组元素和目标都是非负整数。');
     const suffix=Array(a.length+1).fill(0),chosen=[],stack=[];
     const t=L.lessonTrace('pruning',{a,target},L.array(a));
-    const s=(label,message,vars={})=>t.step(label,message,{target,已选下标:chosen.slice(),调用栈:stack.slice(),...vars},L.array(a,vars.i>=0&&vars.i<a.length?[vars.i]:[],{found:chosen.slice(),caption:'每个元素最多选一次。黄色是待决定元素，绿色是当前分支已选择的元素。',aux:[{label:'suffix[i]：从 i 到末尾的元素和',values:suffix},{label:'当前选择',values:chosen.map(i=>a[i])},{label:'调用栈（位置, 当前和）',values:stack.map(x=>`${x.i}, ${x.sum}`)}]}));
+    const s=(label,message,vars={})=>t.step(label,message,{target,已选下标:chosen.slice(),调用栈:stack.slice(),...vars},L.array(a,vars.i>=0&&vars.i<a.length?[vars.i]:[],{pointers:Number.isInteger(vars.i)?{i:vars.i}:{},found:chosen.slice(),caption:'每个元素最多选一次。黄色是待决定元素，绿色是当前分支已选择的元素。',aux:[{label:'suffix[i]：从 i 到末尾的元素和',values:suffix},{label:'当前选择',values:chosen.map(i=>a[i])},{label:'调用栈（位置, 当前和）',values:stack.map(x=>`${x.i}, ${x.sum}`)}]}));
     s('suffix','建立长度 n + 1 的后缀和数组，末尾为 0。');
     for(let i=a.length-1;;i--){s('build','从右向左累计剩余元素之和。',{i});if(i<0)break;suffix[i]=suffix[i+1]+a[i];s('sumSuffix','这一项等于后面的和加上当前元素。',{i});}
     function dfs(i,sum){
@@ -144,7 +144,7 @@ remove|        col[row] = -1;
     if(!Number.isInteger(n)||n<0||n>30)throw new Error('记忆化演示支持 0 到 30 的整数。');
     const memo=Array(n+1).fill(-1),stack=[];
     const t=L.lessonTrace('memo-search',{n},L.array(memo));
-    const s=(label,message,vars={})=>t.step(label,message,{...vars,调用栈:stack.slice()},L.array(memo,vars.n===undefined?[]:[vars.n],{found:memo.flatMap((x,i)=>x>=0?[i]:[]),caption:'memo[n] 保存 F(n)，-1 表示尚未求解；F(0)=0，F(1)=1。',aux:[{label:'递归调用栈（右侧是当前层）',values:stack.map(x=>`F(${x})`)}]}));
+    const s=(label,message,vars={})=>t.step(label,message,{...vars,调用栈:stack.slice()},L.array(memo,vars.n===undefined?[]:[vars.n],{pointers:Number.isInteger(vars.n)?{n:vars.n}:{},found:memo.flatMap((x,i)=>x>=0?[i]:[]),caption:'memo[n] 保存 F(n)，-1 表示尚未求解；F(0)=0，F(1)=1。',aux:[{label:'递归调用栈（右侧是当前层）',values:stack.map(x=>`F(${x})`)}]}));
     s('init','所有子问题先标记为未求解。');
     function dfs(k){
       stack.push(k);s('cached','每次调用先检查缓存，已有结果可以直接复用。',{n:k});

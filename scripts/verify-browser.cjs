@@ -14,7 +14,7 @@ const {chromium}=require(packageRoot);
     await page.goto(base,{waitUntil:'networkidle'});
     await page.screenshot({path:path.resolve(__dirname,'../artifacts/home-desktop.png'),fullPage:true});
     assert.equal(await page.locator('.category-card').count(),await page.evaluate(()=>AlgoLab.catalogGroups.length));
-    assert.equal(await page.locator('#structure-grid .category-card').count(),9);
+    assert.equal(await page.locator('#structure-grid .category-card').count(),10);
     assert.equal(await page.locator('#algorithm-grid .category-card').count(),11);
     await page.locator('#search-input').fill('二分');
     const expectedMatches=await page.evaluate(()=>AlgoLab.allItems.filter(x=>(x.title+' '+x.id+' '+x.groupTitle+' '+x.description).toLowerCase().includes('二分')).length);

@@ -1,0 +1,150 @@
+/* Fixed pointer lessons keep their memory diagram separate from algorithm index arrows. */
+.pointer-course{padding-bottom:36px}
+.pointer-course .pointer-course-meta{display:flex;flex-wrap:wrap;justify-content:center;gap:7px 16px;margin:11px 0 0;font-size:10px;color:#e4e8fb}
+.pointer-course .pointer-orientation{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:20px 0}
+.pointer-course .pointer-orientation article{min-width:0;border:1px solid #d4deed;border-radius:10px;padding:15px 18px;background:#ffffffb0}
+.pointer-course .pointer-orientation b{display:block;color:#4d6090;font-size:14px;margin-bottom:7px}
+.pointer-course .pointer-orientation p{color:#73809a;font-size:11px;line-height:1.9;overflow-wrap:anywhere}
+.pointer-course .pointer-level-section>h2{font-size:20px;line-height:1.5;margin:22px 0 8px;color:#354969}
+.pointer-course .pointer-level-section>p{font-size:12px;line-height:1.85;color:#6e7f97}
+.pointer-course #pointer-levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:22px 0}
+.pointer-course .pointer-level{display:flex;flex-direction:column;gap:7px;align-items:flex-start;text-align:left;padding:18px 20px;border:1px solid #cbd6e8;border-radius:13px;background:#ffffffb8;color:#62728c;box-shadow:0 5px 15px #5e78a00a;font:12px/1.6 var(--sans)}
+.pointer-course .pointer-level strong{font-size:19px;font-weight:700;color:#34456b}
+.pointer-course .pointer-level small{font-size:10px;color:#7d8aa3}
+.pointer-course .pointer-level[aria-selected=true]{border-color:#786cc1;background:linear-gradient(130deg,#edf5ff,#f1eafb);box-shadow:0 4px 14px #6973b520,inset 0 0 0 1px #a399dc4d}
+.pointer-course .pointer-level[aria-selected=true] strong{color:#51448e}
+.pointer-course .pointer-course-shell{display:grid;grid-template-columns:208px minmax(0,1fr);gap:22px;align-items:start}
+.pointer-course .pointer-course-sidebar{position:sticky;top:78px;min-width:0;border:1px solid #d6dfed;border-radius:12px;padding:15px 11px;background:#ffffffbf;box-shadow:0 6px 18px #526c9509}
+.pointer-course .pointer-course-sidebar h2,.pointer-course .pointer-course-sidebar h3{margin:0 9px 12px;font-size:13px;color:#596987}
+.pointer-course .pointer-course-content{min-width:0}
+.pointer-course #pointer-lessons{display:grid;gap:7px}
+.pointer-course .pointer-lesson{display:flex;align-items:center;gap:9px;text-align:left;width:100%;min-width:0;padding:11px 9px;border:1px solid transparent;border-radius:8px;background:transparent;color:#5a6881;font:12px/1.65 var(--sans)}
+.pointer-course .pointer-lesson:hover{border-color:#d4dbec;background:#f0f4fc}
+.pointer-course .pointer-lesson-number{display:grid;place-items:center;flex-shrink:0;width:25px;height:25px;border:1px solid #cfd9eb;border-radius:8px;background:#edf3fb;color:#7390b6;font:11px var(--mono)}
+.pointer-course .pointer-lesson-name{overflow-wrap:anywhere}
+.pointer-course .pointer-lesson[aria-pressed=true]{background:linear-gradient(120deg,#3c71b3,#64519d);color:white;box-shadow:0 3px 9px #506cb529}
+.pointer-course .pointer-lesson[aria-pressed=true] .pointer-lesson-number{background:#ffffff1c;border-color:#ffffff38;color:#fff}
+.pointer-course #pointer-lesson-title{font-size:26px;line-height:1.45;margin:1px 0 9px;color:#243652;letter-spacing:-.6px}
+.pointer-course #pointer-goal{font-size:13px;line-height:1.8;color:#627493;margin:0 0 12px}
+.pointer-course #pointer-explanation{margin:12px 0 18px}
+.pointer-course #pointer-explanation p{font-size:12px;line-height:1.9;color:#64738b;margin:5px 0}
+.pointer-course .pointer-workspace{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:16px;align-items:stretch;margin:18px 0 13px}
+.pointer-course .pointer-memory-panel,.pointer-course .pointer-code-panel{min-width:0;overflow:hidden;border:1px solid #656080;border-radius:12px;background:#1c2334;color:#dbe4f6;box-shadow:0 7px 20px #3447711a}
+.pointer-course .pointer-code-panel{display:flex;flex-direction:column;background:#1d2232}
+.pointer-course .pointer-memory-panel>h3,.pointer-course .pointer-code-panel>h3,.pointer-course .pointer-panel-heading,.pointer-course .pointer-memory-panel .panel-header,.pointer-course .pointer-code-panel .panel-header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 17px;margin:0;background:linear-gradient(110deg,#303a53,#39314c);border-bottom:1px solid #69729157;color:#e5e9f5;font:600 12px/1.6 var(--sans)}
+.pointer-course .pointer-panel-heading small{color:#aab7d0;font-size:9px;font-weight:400}
+.pointer-course .pointer-panel-heading h3{margin:0;font-size:12px;font-weight:600}
+.pointer-course .pointer-panel-heading>span{color:#aab7d0;font-size:9px;font-weight:400}
+.pointer-course #pointer-memory{position:relative;isolation:isolate;min-height:310px;min-width:0;background:radial-gradient(ellipse at 10% 0,#46528a29,transparent 65%),#1d2537}
+.pointer-course .pointer-memory-board{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:66px;padding:18px 48px 12px 16px}
+.pointer-course .pointer-memory-lane{display:flex;flex-direction:column;gap:24px;min-width:0}
+.pointer-course .pointer-lane-title{font-size:10px;line-height:1.6;letter-spacing:.7px;color:#a4b4d3;font-weight:400;margin:0 0 -9px}
+.pointer-course .pointer-lane-empty{padding:20px 0;color:#8393b1;font-size:11px;line-height:1.8}
+.pointer-course .pointer-cell{position:relative;min-width:0;border:1px solid #536586;border-radius:9px;background:#27324a;padding:12px;box-shadow:0 3px 10px #070d201a;transition:border-color .2s,background .2s,box-shadow .2s}
+.pointer-course .pointer-cell[data-kind=pointer]{background:#302d49;border-color:#8475af}
+.pointer-course .pointer-cell-heading{display:flex;gap:6px;align-items:center;justify-content:space-between;min-width:0}
+.pointer-course .pointer-cell-heading strong{min-width:0;overflow-wrap:anywhere;font:650 13px/1.6 var(--mono);color:#f0f4ff}
+.pointer-course .pointer-cell-kind{flex-shrink:0;border:1px solid #9bb2dd55;border-radius:4px;padding:1px 4px;color:#b9c8e5;font:9px/1.5 var(--sans)}
+.pointer-course .pointer-cell-type{display:block;margin:3px 0 9px;font:10px/1.6 var(--mono);color:#a8badb;overflow-wrap:anywhere}
+.pointer-course .pointer-cell-details{margin:0;display:grid;gap:10px;min-width:0}
+.pointer-course .pointer-cell-details>div{min-width:0}
+.pointer-course .pointer-cell-details dt{font:9px/1.6 var(--sans);color:#a3b2cf;margin-bottom:3px}
+.pointer-course .pointer-cell-details dd{font:11px/1.7 var(--mono);color:#e0e9fb;margin:0;overflow-wrap:anywhere}
+.pointer-course .pointer-cell-current{border-top:1px solid #a4b9e329;padding-top:8px}
+.pointer-course .pointer-cell-current .pointer-cell-value{font-size:14px;color:#e7e4ff}
+.pointer-course .pointer-cell-status{margin:10px 0 0;padding-top:6px;border-top:1px solid #a4b9e322;color:#9fb3d5;font-size:9px;line-height:1.6}
+.pointer-course .pointer-cell.is-changed{border-color:#e2c47e;background:#4d433c;box-shadow:0 0 0 2px #e4c48120}
+.pointer-course .is-target-changed .pointer-cell-value,.pointer-course .pointer-value-chip.is-changed{color:#ffe1a3}
+.pointer-course .pointer-cell.is-freed,.pointer-course .pointer-cell.is-ended,.pointer-course .pointer-cell.is-dangling{border-color:#cc7b89;background:#3c2b3b}
+.pointer-course .pointer-cell.is-freed .pointer-cell-current dd,.pointer-course .pointer-cell.is-ended .pointer-cell-current dd{text-decoration:line-through;color:#c6a4b6}
+.pointer-course .pointer-cell.is-freed .pointer-cell-status,.pointer-course .pointer-cell.is-ended .pointer-cell-status,.pointer-course .pointer-cell.is-dangling .pointer-cell-status{color:#ffb0b6}
+.pointer-course .pointer-cell.is-boundary{border-style:dashed;background:#292c42}
+.pointer-course .pointer-cell.is-boundary .pointer-cell-status{color:#c8b6eb}
+.pointer-course .pointer-cell-details dd.pointer-cell-values{display:flex;gap:5px;flex-wrap:nowrap;max-width:100%;overflow:auto;padding-bottom:3px}
+.pointer-course .pointer-value-chip{display:block;flex-shrink:0;border:1px solid #7c8dad59;border-radius:4px;padding:3px 5px;background:#1b233866;font:11px/1.6 var(--mono);white-space:nowrap}
+.pointer-course .pointer-memory-lines{position:absolute;top:0;left:0;z-index:2;pointer-events:none;overflow:visible}
+.pointer-course .pointer-memory-link{stroke-linecap:round;stroke-linejoin:round}
+.pointer-course .pointer-memory-link.is-danger{stroke-dasharray:5 4}
+.pointer-course .pointer-memory-link.is-boundary{stroke-dasharray:3 4}
+.pointer-course .pointer-memory-note{position:relative;z-index:1;margin:7px 16px 0;padding:12px 0 15px;border-top:1px solid #7085ad29;color:#9caecf;font-size:10px;line-height:1.85}
+.pointer-course #pointer-code{counter-reset:pointer-line;list-style:none;padding:12px 0 18px;margin:0;overflow:auto;min-width:0;min-height:310px;max-height:620px;flex:1;tab-size:4}
+.pointer-course #pointer-code li{position:relative;counter-increment:pointer-line;white-space:pre;min-height:25px;padding:0 13px 0 43px;margin:0;border-left:3px solid transparent;color:#d2d9ed;font:11px/25px var(--mono)}
+.pointer-course #pointer-code li::before{content:counter(pointer-line);position:absolute;left:10px;width:20px;text-align:right;color:#8a9ab6;font:10px/25px var(--mono);user-select:none}
+.pointer-course #pointer-code li.is-current{background:#e5bd5647;border-left-color:#f1d27e;color:#fff0be}
+.pointer-course #pointer-code li.is-current::before{color:#f4db9c}
+.pointer-course #pointer-code li.is-blocked{border-left-color:#ff9ba4;background:#ac526345;color:#ffe0e4}
+.pointer-course #pointer-message{min-height:48px;line-height:1.9;margin:0;padding:14px 17px;border:1px solid #d3dcec;border-radius:9px;background:#ffffffbd;font-size:12px;color:#566785}
+.pointer-course .pointer-blocked{margin:9px 0 0;padding:12px 16px;border:1px solid #dfb1b7;border-radius:8px;background:#fff1f3;color:#944e5d;font-size:12px;line-height:1.85}
+.pointer-course .pointer-output{margin:9px 0 0;padding:12px 16px;border:1px solid #d8e1ee;border-radius:8px;background:#fafcff;color:#6b7c98;font-size:10px}
+.pointer-course .pointer-output pre{margin:7px 0 0;color:#354d73;font:12px/1.8 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
+.pointer-course .pointer-output[hidden],.pointer-course .pointer-blocked[hidden]{display:none}
+.pointer-course .pointer-transport{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:13px 15px;margin:14px 0 20px;border:1px solid #d2dbeb;border-radius:10px;background:#ffffffc7;box-shadow:0 4px 13px #5675a00c}
+.pointer-course .pointer-transport button{min-height:36px;padding:6px 11px;border:1px solid #c9d3e6;border-radius:7px;background:#f8fbff;color:#5c6c89;font:11px/1.6 var(--sans);white-space:nowrap}
+.pointer-course .pointer-transport button:disabled{opacity:.42;cursor:default}
+.pointer-course #pointer-play{min-width:80px;background:linear-gradient(110deg,#4d86c6,#7960af);border-color:#7388c7;color:#fff}
+.pointer-course #pointer-seek{flex:1;min-width:110px;accent-color:#7662af}
+.pointer-course #pointer-step-count{font:10px var(--mono);color:#667c9d;white-space:nowrap}
+.pointer-course #pointer-speed{padding:7px 5px;border:1px solid #cbd6e8;border-radius:6px;background:#f9fbff;color:#586b8c;font:10px var(--mono)}
+.pointer-course #pointer-pitfall{padding:14px 17px;border-left:3px solid #cfaa5d;border-radius:5px;background:#fff5e3;color:#877140;font-size:12px;line-height:1.9;margin:14px 0 20px}
+.pointer-course .pointer-pitfall>h3,.pointer-course .pointer-related-section>h3{font-size:14px;line-height:1.7;color:#536b8f;margin:14px 0 8px}
+.pointer-course .pointer-practice{padding:17px 19px;margin:18px 0;border:1px solid #d5deed;border-radius:11px;background:#ffffffb3}
+.pointer-course .pointer-practice-label{color:#8279af;font-size:10px;letter-spacing:1px}
+.pointer-course .pointer-reference{padding:12px 15px;border:1px solid #d7dfed;border-radius:9px;background:#ffffff96;color:#73829c;font-size:11px}
+.pointer-course .pointer-reference>summary{cursor:pointer;color:#637396}
+.pointer-course #pointer-question{font-size:15px;line-height:1.8;color:#3c5071;margin:12px 0}
+.pointer-course #pointer-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.pointer-course .pointer-option{padding:12px 14px;border:1px solid #d0daea;border-radius:8px;text-align:left;background:#ffffffc4;color:#64738d;font:12px/1.9 var(--sans);overflow-wrap:anywhere}
+.pointer-course .pointer-option:hover{border-color:#9292bd}
+.pointer-course .pointer-option.is-correct{background:#eef8f3;border-color:#7bad96;color:#477e62}
+.pointer-course .pointer-option.is-incorrect{background:#fff2f2;border-color:#cc9da7;color:#995c6c}
+.pointer-course .pointer-feedback{padding:12px 14px;margin:12px 0;border-radius:8px;font-size:12px;line-height:1.9;color:#687a99}
+.pointer-course .pointer-feedback:empty{display:none}
+.pointer-course .pointer-feedback.is-correct{background:#eaf6ef;color:#45775d}
+.pointer-course .pointer-feedback.is-incorrect{background:#fbeef1;color:#905565}
+.pointer-course #pointer-related,.pointer-course #pointer-sources{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px;font-size:11px;line-height:1.8}
+.pointer-course #pointer-related a,.pointer-course #pointer-sources a{display:inline-block;padding:5px 9px;border:1px solid #d1d9eb;border-radius:6px;background:#ffffff8c;color:#5c659c;text-decoration:none;overflow-wrap:anywhere}
+.pointer-course .pointer-no-links{color:#8190aa}
+.pointer-course button:focus-visible,.pointer-course a:focus-visible,.pointer-course input:focus-visible,.pointer-course select:focus-visible{outline:3px solid #7770c7;outline-offset:3px}
+@media(max-width:1100px){
+  .pointer-course .pointer-memory-board{gap:42px;padding-left:12px;padding-right:43px}
+  .pointer-course .pointer-cell{padding:10px}
+  .pointer-course .pointer-cell-heading strong{font-size:12px}
+  .pointer-course .pointer-cell-details dt{font-size:9px}
+  .pointer-course .pointer-cell-details dd{font-size:10px}
+}
+@media(max-width:1000px){
+  .pointer-course .pointer-course-shell{grid-template-columns:1fr}
+  .pointer-course .pointer-course-sidebar{position:static}
+  .pointer-course #pointer-lessons{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .pointer-course .pointer-workspace{gap:14px}
+  .pointer-course #pointer-code{max-height:580px}
+}
+@media(max-width:760px){
+  .pointer-course .pointer-orientation{grid-template-columns:1fr;gap:8px}
+  .pointer-course .pointer-orientation article{padding:12px 15px}
+  .pointer-course #pointer-levels{gap:8px;margin:16px 0}
+  .pointer-course .pointer-level{padding:12px 10px;gap:5px;font-size:10px}
+  .pointer-course .pointer-level strong{font-size:16px}
+  .pointer-course .pointer-level span{display:none}
+  .pointer-course .pointer-level small{font-size:9px}
+  .pointer-course #pointer-lessons{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pointer-course .pointer-lesson{padding:9px 7px;font-size:11px;gap:7px}
+  .pointer-course #pointer-lesson-title{font-size:22px}
+  .pointer-course .pointer-workspace{grid-template-columns:1fr}
+  .pointer-course .pointer-memory-board{grid-template-columns:1fr;gap:34px;padding:17px 52px 14px 14px}
+  .pointer-course .pointer-memory-lane{gap:19px}
+  .pointer-course .pointer-cell{padding:12px}
+  .pointer-course .pointer-cell-details{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:12px}
+  .pointer-course .pointer-cell-current{border-top:0;border-left:1px solid #a4b9e329;padding:0 0 0 12px}
+  .pointer-course .pointer-cell-details dd{font-size:11px}
+  .pointer-course .pointer-cell-heading strong{font-size:13px}
+  .pointer-course #pointer-code{max-height:410px;min-height:210px}
+  .pointer-course #pointer-code li{font-size:11px}
+  .pointer-course .pointer-transport{gap:7px;padding:11px 10px}
+  .pointer-course .pointer-transport button{padding:7px 10px}
+  .pointer-course #pointer-seek{order:2;flex-basis:calc(100% - 90px);min-width:120px}
+  .pointer-course #pointer-step-count{order:2}
+  .pointer-course #pointer-speed{margin-left:auto}
+  .pointer-course #pointer-options{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){.pointer-course .pointer-cell{transition:none}}

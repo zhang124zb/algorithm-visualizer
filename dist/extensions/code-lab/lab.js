@@ -86,10 +86,12 @@
     const arrays=step.variables.filter(CppLabScene.isVisual);
     const chosen=$('watch-array').value,previous=trace.steps[index-1];
     const selected=CppLabScene.selectArrays(step,previous,arrayUsage,chosen);
+    const pointers=CppLabScene.indexPointers(step.variables);
     const hidden=arrays.filter(v=>!selected.some(s=>s.item.name===v.name));
     const noun=arrays.some(v=>v.kind)?'数组/容器':'数组';
     $('array-summary').textContent=arrays.length?(hidden.length?'当前 '+arrays.length+' 个'+noun+'，优先展示 3 个；暂时收起：'+hidden.map(v=>v.name).join('、'):'当前 '+arrays.length+' 个'+noun+'，全部显示。'):'当前作用域暂无数组或容器，展示函数调用过程。';
     if(chosen&&!arrays.some(v=>v.name===chosen))$('array-summary').textContent+=' '+chosen+' 在当前作用域尚不可见。';
+    if(Object.keys(pointers).length&&selected.some(({item})=>!item.kind||['vector','string'].includes(item.kind)))$('array-summary').textContent+=' 下标箭头按常见变量名推断，不会自动分析任意指针或数组归属。';
     if(!selected.length){
       scenes.clear();$('stage').classList.remove('lab-array-list','lab-array-list-multiple');
       const stack=step.stack||[];
@@ -113,7 +115,7 @@
       const previousItem=previous?.variables.find(v=>v.name===item.name),old=previousItem?.value;
       scene.card.dataset.kind=item.kind||'array';
       scene.card.setAttribute('aria-label',item.name+' '+(item.kind||'数组')+' 动画');
-      if(CppLabScene.drawContainer(scene.canvas,item,previousItem)){scene.renderer.kind=null;scene.renderer.cells.clear();continue;}
+      if(CppLabScene.drawContainer(scene.canvas,item,previousItem,{pointers,compact:selected.length>1})){scene.renderer.kind=null;scene.renderer.cells.clear();continue;}
       const changed=(i,j)=>old!==undefined&&JSON.stringify(j===undefined?old[i]:old[i]?.[j])!==JSON.stringify(j===undefined?item.value[i]:item.value[i][j]);
       const matrix=item.value.length>0&&item.value.every(Array.isArray);
       scene.canvas.style.setProperty('--lab-array-width',!matrix&&item.value.length>12?item.value.length*34+'px':'0px');
@@ -122,9 +124,8 @@
         const active=[];for(let i=0;i<item.value.length;i++)for(let j=0;j<(item.value[i]?.length||0);j++)if(changed(i,j))active.push([i,j]);
         scene.renderer.draw({kind:'matrix',rows:item.value,active,caption});
       }else{
-        const active=item.value.map((_,i)=>i).filter(i=>changed(i)),pointers={};
-        for(const v of step.variables)if(/^(?:i|j|k|mid|left|right|l|r|low|high|front|rear|top|pos|index)$/.test(v.name)&&Number.isInteger(v.value)&&v.value>=0&&v.value<item.value.length)pointers[v.name]=v.value;
-        scene.renderer.draw({kind:'array',values:item.value,active,pointers,compact:selected.length>1,caption:caption+' · 黄色为本步变化'});
+        const active=item.value.map((_,i)=>i).filter(i=>changed(i));
+        scene.renderer.draw({kind:'array',values:item.value,active,pointers,pointerCount:item.length??item.value.length,compact:selected.length>1,caption:caption+' · 黄色为本步变化'});
       }
     }
   }

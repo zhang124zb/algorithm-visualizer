@@ -17,6 +17,12 @@
 .lab-stl-stack .lab-stl-cell{min-width:110px;flex-direction:row;align-items:center;max-width:100%}
 .lab-stl-stack .lab-stl-cell b{min-width:75px;padding:8px 12px}
 .lab-stl-queue{flex-wrap:nowrap;width:max-content;min-width:100%}
+.lab-stl-vector,.lab-stl-string{flex-wrap:nowrap;width:max-content;min-width:100%}
+.lab-stl-vector,.lab-stl-string,.lab-stl-queue,.lab-stl-stack{position:relative}
+.lab-stl-vector .lab-stl-cell,.lab-stl-string .lab-stl-cell,.lab-stl-queue .lab-stl-cell{flex-shrink:0}
+.lab-stl-items.pointer-host{padding-bottom:calc(8px + var(--pointer-space,0px))}
+.lab-main .lab-array-list-multiple .array-stage.pointer-host{height:calc(135px + var(--pointer-space,0px))}
+.lab-stl-stack.pointer-host .lab-stl-cell small{visibility:hidden}
 .lab-stl-pair{justify-content:center;gap:20px}.lab-stl-pair .lab-stl-cell{min-width:90px}
 .lab-stl-set .lab-stl-cell b,.lab-stl-unordered_set .lab-stl-cell b{border-radius:22px}
 .lab-stl-string .lab-stl-cell{min-width:32px}.lab-stl-string .lab-stl-cell b{padding:10px 7px}

@@ -1,5 +1,7 @@
 require('./verify.cjs');
 require('./verify-pages.cjs');
+require('./verify-practice.cjs');
+require('./verify-pointer-course.cjs');
 require('./verify-languages.cjs');
 require('./verify-competition.cjs');
 require('./verify-foundations.cjs');

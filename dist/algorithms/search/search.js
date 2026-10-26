@@ -11,10 +11,10 @@ found|            return i;
 missing|    return -1;
 }`, { values: a, target }, L.array(a));
     for (let i = 0; ; i++) {
-      t.step('loop', i < a.length ? '检查循环条件，访问下一个元素。' : '已检查所有元素，结束循环。', { i, target }, L.array(a, i < a.length ? [i] : []));
+      t.step('loop', i < a.length ? '检查循环条件，访问下一个元素。' : '已检查所有元素，结束循环。', { i, target }, L.array(a, i < a.length ? [i] : [], {pointers:{i}}));
       if (i >= a.length) break;
       t.step('compare', `比较 ${a[i]} 与目标 ${target}。`, { i, target, 'a[i]': a[i] });
-      if (a[i] === target) { t.step('found', `找到目标，返回下标 ${i}。`, { i, target }, L.array(a, [i], { found: [i] })); return t.done(i); }
+      if (a[i] === target) { t.step('found', `找到目标，返回下标 ${i}。`, { i, target }, L.array(a, [i], { found: [i], pointers:{i} })); return t.done(i); }
     }
     t.step('missing', '数组中没有目标，返回 -1。', { target }); return t.done(-1);
   });

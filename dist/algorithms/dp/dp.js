@@ -8,7 +8,7 @@ loop|    for (int i = 2; i <= n; ++i) {
 add|        f[i] = f[i - 1] + f[i - 2];
     }
 return|    return f[n];
-}`,{n},L.array(f));const s=(l,m,v={},active=[])=>t.step(l,m,{n,...v},L.array(f,active));s('init','初始化 f[0] = 0，其余状态也先置零。');if(n>=1)f[1]=1;s('base','设置基础状态 f[1] = 1。',{},[1]);for(let i=2;;i++){s('loop','按下标从小到大计算状态。',{i});if(i>n)break;f[i]=f[i-1]+f[i-2];s('add','将前两个已知状态相加。',{i,'f[i-1]':f[i-1],'f[i-2]':f[i-2]},[i-2,i-1,i]);}s('return','返回第 n 个状态。');return t.done(f[n]);
+}`,{n},L.array(f));const s=(l,m,v={},active=[])=>t.step(l,m,{n,...v},L.array(f,active,{pointers:Number.isInteger(v.i)?{i:v.i}:{}}));s('init','初始化 f[0] = 0，其余状态也先置零。');if(n>=1)f[1]=1;s('base','设置基础状态 f[1] = 1。',{},[1]);for(let i=2;;i++){s('loop','按下标从小到大计算状态。',{i});if(i>n)break;f[i]=f[i-1]+f[i-2];s('add','将前两个已知状态相加。',{i,'f[i-1]':f[i-1],'f[i-2]':f[i-2]},[i-2,i-1,i]);}s('return','返回第 n 个状态。');return t.done(f[n]);
   });
   L.register('knapsack',(options={})=>{
     const weights=options.weights?.slice()||L.numbers(4,1,5),values=options.values?.slice()||L.numbers(4,3,12),capacity=options.capacity??10,dp=Array(capacity+1).fill(0);
@@ -21,7 +21,7 @@ update|            dp[c] = max(dp[c], dp[c - weight[i]] + value[i]);
     }
 return|    return dp[capacity];
 }`,{weights,values,capacity},L.array(dp));
-    const s=(l,m,v={},active=[])=>t.step(l,m,{capacity,...v},L.array(dp,active,{caption:'下标为容量，数值为该容量内的最大价值',aux:[{label:'物品重量',values:weights},{label:'物品价值',values}]}));s('init','每个容量的最优价值初始为 0。');for(let i=0;;i++){s('items','依次考虑每件物品。',{i});if(i>=weights.length)break;for(let c=capacity;;c--){s('loop','容量倒序遍历，避免同一物品被重复选择。',{i,c,weight:weights[i],value:values[i]});if(c<weights[i])break;const candidate=dp[c-weights[i]]+values[i],previous=dp[c];dp[c]=Math.max(previous,candidate);s('update','比较不选与选择当前物品的价值。',{i,c,不选:previous,选择:candidate},[c-weights[i],c]);}}s('return','返回总容量内的最大价值。');return t.done(dp[capacity]);
+    const s=(l,m,v={},active=[])=>t.step(l,m,{capacity,...v},L.array(dp,active,{pointers:Number.isInteger(v.c)?{c:v.c}:{},caption:'下标为容量，数值为该容量内的最大价值',aux:[{label:'物品重量',values:weights},{label:'物品价值',values}]}));s('init','每个容量的最优价值初始为 0。');for(let i=0;;i++){s('items','依次考虑每件物品。',{i});if(i>=weights.length)break;for(let c=capacity;;c--){s('loop','容量倒序遍历，避免同一物品被重复选择。',{i,c,weight:weights[i],value:values[i]});if(c<weights[i])break;const candidate=dp[c-weights[i]]+values[i],previous=dp[c];dp[c]=Math.max(previous,candidate);s('update','比较不选与选择当前物品的价值。',{i,c,不选:previous,选择:candidate},[c-weights[i],c]);}}s('return','返回总容量内的最大价值。');return t.done(dp[capacity]);
   });
   L.register('lis',(options={})=>{
     const a=options.values?.slice()||L.numbers(),dp=Array(a.length).fill(1);let answer=0;
@@ -37,7 +37,7 @@ update|                dp[i] = max(dp[i], dp[j] + 1);
 best|        answer = max(answer, dp[i]);
     }
 return|    return answer;
-}`,{values:a},L.array(a));const s=(l,m,v={},active=[])=>t.step(l,m,{answer,dp,...v},L.array(a,active,{aux:[{label:'以该位置结尾的 LIS 长度',values:dp}]}));s('init','每个元素单独构成长度为 1 的子序列。');s('answer','记录全局最优长度。');for(let i=0;;i++){s('outer','计算以当前位置结尾的最长上升子序列。',{i});if(i>=a.length)break;for(let j=0;;j++){s('inner','枚举当前位置之前的元素。',{i,j});if(j>=i)break;s('test','只有严格较小的元素才能接在前面。',{i,j},[j,i]);if(a[j]<a[i]){dp[i]=Math.max(dp[i],dp[j]+1);s('update','尝试延长以 j 结尾的上升子序列。',{i,j},[j,i]);}}answer=Math.max(answer,dp[i]);s('best','更新全局最长长度。',{i},[i]);}s('return','返回最长严格上升子序列的长度。');return t.done(answer);
+}`,{values:a},L.array(a));const s=(l,m,v={},active=[])=>t.step(l,m,{answer,dp,...v},L.array(a,active,{pointers:Object.fromEntries(['i','j'].filter(name=>Number.isInteger(v[name])).map(name=>[name,v[name]])),aux:[{label:'以该位置结尾的 LIS 长度',values:dp}]}));s('init','每个元素单独构成长度为 1 的子序列。');s('answer','记录全局最优长度。');for(let i=0;;i++){s('outer','计算以当前位置结尾的最长上升子序列。',{i});if(i>=a.length)break;for(let j=0;;j++){s('inner','枚举当前位置之前的元素。',{i,j});if(j>=i)break;s('test','只有严格较小的元素才能接在前面。',{i,j},[j,i]);if(a[j]<a[i]){dp[i]=Math.max(dp[i],dp[j]+1);s('update','尝试延长以 j 结尾的上升子序列。',{i,j},[j,i]);}}answer=Math.max(answer,dp[i]);s('best','更新全局最长长度。',{i},[i]);}s('return','返回最长严格上升子序列的长度。');return t.done(answer);
   });
   L.register('lcs',(options={})=>{
     const randomString=()=>Array.from({length:6},()=>'ABCD'[L.rand(0,3)]).join('');const a=options.a??randomString(),b=options.b??randomString(),dp=Array.from({length:a.length+1},()=>Array(b.length+1).fill(0));

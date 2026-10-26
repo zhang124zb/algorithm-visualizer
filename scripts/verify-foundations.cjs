@@ -25,7 +25,7 @@ assert.equal(L.allItems.length,120);
 assert.equal(new Set(L.allItems.map(x=>x.id)).size,L.allItems.length);
 assert.equal(L.groups.filter(g=>g.section==='structures').length,8);
 assert.equal(L.groups.filter(g=>g.section==='algorithms').length,11);
-assert.equal(L.catalogGroups.filter(g=>g.section==='structures').length,9);
+assert.equal(L.catalogGroups.filter(g=>g.section==='structures').length,10);
 assert.equal(L.guideGroups[0].id,'stl');assert.equal(L.guideGroups[0].guide,true);
 assert.ok(L.guideGroups[0].entries.every(item=>item===L.item(item.id)),'STL guide reuses existing demonstration metadata');
 assert.ok(L.searchItems.some(item=>item.path==='structures/stl/index.html'),'STL guide must be searchable');

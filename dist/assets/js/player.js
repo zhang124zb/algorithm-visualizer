@@ -70,6 +70,6 @@
   ui.restart.addEventListener('click',()=>{setPlaying(false);index=0;previousVars={};render();});
   ui.random.addEventListener('click',generate);ui.seek.addEventListener('input',()=>{setPlaying(false);index=Number(ui.seek.value);render();});
   ui.speed.addEventListener('change',()=>{if(playing)setPlaying(true);});
-  document.addEventListener('keydown',event=>{if(event.ctrlKey||event.metaKey||event.altKey||/INPUT|SELECT|TEXTAREA|BUTTON/.test(event.target.tagName))return;if(event.code==='Space'){event.preventDefault();ui.play.click();}else if(event.code==='ArrowLeft'){event.preventDefault();ui.previous.click();}else if(event.code==='ArrowRight'){event.preventDefault();ui.next.click();}else if(event.code==='KeyR'){event.preventDefault();ui.restart.click();}});
+  document.addEventListener('keydown',event=>{if(event.ctrlKey||event.metaKey||event.altKey||/^(?:INPUT|SELECT|TEXTAREA|BUTTON|A)$/.test(event.target.tagName))return;if(event.code==='Space'){event.preventDefault();ui.play.click();}else if(event.code==='ArrowLeft'){event.preventDefault();ui.previous.click();}else if(event.code==='ArrowRight'){event.preventDefault();ui.next.click();}else if(event.code==='KeyR'){event.preventDefault();ui.restart.click();}});
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing)setPlaying(false);});window.addEventListener('resize',()=>{if(trace)renderer.draw(trace.steps[index].view);});window.addEventListener('pagehide',()=>clearTimeout(timer));generate();
 })(AlgoLab);

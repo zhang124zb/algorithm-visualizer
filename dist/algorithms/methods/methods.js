@@ -3,7 +3,7 @@
   L.register('enumeration',(o={})=>{
     const a=o.a?.slice()||L.numbers(7,1,12),target=o.target??(a.length>=5?a[1]+a[4]:a.length>=2?a[0]+a[1]:0);
     const t=L.lessonTrace('enumeration',{a,target},L.array(a));
-    const s=(label,message,vars={},active=[])=>t.step(label,message,{target,...vars},L.array(a,active));
+    const s=(label,message,vars={},active=[])=>t.step(label,message,{target,...vars},L.array(a,active,{pointers:Object.fromEntries(['i','j'].filter(name=>Number.isInteger(vars[name])).map(name=>[name,vars[name]]))}));
     for(let i=0;;i++){
       s('outer','枚举第一个下标。',{i},i<a.length?[i]:[]);
       if(i>=a.length)break;
@@ -24,7 +24,7 @@
     if(!Number.isInteger(quantum)||quantum<=0||a.some(x=>!Number.isInteger(x)||x<=0))throw new Error('任务耗时和时间片必须是正整数。');
     const remain=a.slice(),q=[],order=[];let time=0;
     const t=L.lessonTrace('simulation',{a,quantum},L.array(a));
-    const s=(label,message,vars={},active=[])=>t.step(label,message,{quantum,time,queue:q.slice(),order:order.slice(),...vars},L.array(remain,active,{caption:'各任务剩余时间；下标表示任务编号，所有任务在时刻 0 到达。',aux:[{label:'等待队列（左侧先运行）',values:q},{label:'完成顺序',values:order}]}));
+    const s=(label,message,vars={},active=[])=>t.step(label,message,{quantum,time,queue:q.slice(),order:order.slice(),...vars},L.array(remain,active,{pointers:Object.fromEntries(['i','u'].filter(name=>Number.isInteger(vars[name])).map(name=>[name,vars[name]])),caption:'各任务剩余时间；下标表示任务编号，所有任务在时刻 0 到达。',aux:[{label:'等待队列（左侧先运行）',values:q},{label:'完成顺序',values:order}]}));
     s('remaining','复制每个任务的初始耗时。');s('queue','建立等待队列。');s('order','建立完成顺序列表。');s('clock','模拟时钟从 0 开始。');
     for(let i=0;;i++){s('seed','按任务编号把所有任务加入初始队列。',{i});if(i>=a.length)break;q.push(i);s('enqueue','当前任务进入队尾。',{i},[i]);}
     while(true){
@@ -61,7 +61,7 @@
     const a=o.a?.slice()||L.numbers(8,-9,30),stack=[];
     if(!a.length)throw new Error('分治求最大值需要至少一个元素。');
     const t=L.lessonTrace('divide-conquer',{a},L.array(a));
-    const s=(label,message,vars={},active=[])=>t.step(label,message,{调用栈:stack.slice(),...vars},L.array(a,active,{range:stack.length?[stack.at(-1).l,stack.at(-1).r-1]:[0,a.length-1],caption:'每层处理半开区间 [l, r)，下标 r 不包含在区间内。',aux:[{label:'递归区间（右侧是当前层）',values:stack.map(x=>`[${x.l},${x.r})`)}]}));
+    const s=(label,message,vars={},active=[])=>t.step(label,message,{调用栈:stack.slice(),...vars},L.array(a,active,{pointers:Object.fromEntries(['l','r','mid'].filter(name=>Number.isInteger(vars[name])).map(name=>[name,vars[name]])),range:stack.length?[stack.at(-1).l,stack.at(-1).r-1]:[0,a.length-1],caption:'每层处理半开区间 [l, r)，下标 r 不包含在区间内。',aux:[{label:'递归区间（右侧是当前层）',values:stack.map(x=>`[${x.l},${x.r})`)}]}));
     function solve(l,r){
       stack.push({l,r});s('base','区间只有一个元素时，直接得到最大值。',{l,r});
       if(r-l===1){const value=a[l];s('leaf','返回这个单独元素。',{l,r,value},[l]);stack.pop();return value;}

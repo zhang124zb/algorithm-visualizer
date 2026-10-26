@@ -1,4 +1,23 @@
 /* Dark workspace shared by fixed demonstrations and the editable code lab. */
+.pointer-host{position:relative;--pointer-space:0px}
+.array-stage.pointer-host{height:calc(258px + var(--pointer-space))}
+.array-stage.pointer-host .array-cell{bottom:calc(49px + var(--pointer-space))}
+.array-stage .array-index{left:0}
+.pointer-overlay{position:absolute;inset:0;z-index:3;pointer-events:none}
+.algorithm-pointer{position:absolute;top:calc(100% - var(--pointer-space) - 8px);width:0;height:0;color:var(--pointer-color);transition:left .3s ease,top .3s ease;overflow:visible}
+.pointer-shaft{position:absolute;left:-1px;top:3px;width:2px;height:calc(13px + var(--pointer-lane)*28px);background:currentColor;border-radius:2px}
+.pointer-tip{position:absolute;left:-5px;top:-2px;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:7px solid currentColor}
+.pointer-badge{position:absolute;top:calc(18px + var(--pointer-lane)*28px);transform:translateX(-50%);padding:3px 5px;border:1px solid currentColor;border-radius:6px;background:#242b43;color:inherit;box-shadow:0 2px 8px #0003;font:600 10px/16px var(--mono);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.algorithm-pointer.is-boundary .pointer-badge{border-style:dashed;background:#342b45}
+.algorithm-pointer.is-boundary .pointer-shaft{background:repeating-linear-gradient(to bottom,currentColor 0 3px,transparent 3px 6px)}
+.algorithm-pointer.is-side .pointer-shaft{left:3px;top:-1px;width:17px;height:2px}
+.algorithm-pointer.is-side .pointer-tip{left:-2px;top:-5px;border:5px solid transparent;border-right:7px solid currentColor;border-left:0}
+.algorithm-pointer.is-side .pointer-badge{top:-12px}
+.algorithm-pointer.is-side.is-reversed .pointer-shaft{left:-20px}
+.algorithm-pointer.is-side.is-reversed .pointer-tip{left:-5px;border-right:0;border-left:7px solid currentColor}
+.pointer-summary{position:absolute;bottom:0;left:4px;right:4px;font:10px/20px var(--mono);color:#b8b7d5;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.graph-pointer{pointer-events:none}.graph-pointer-shaft{fill:none;stroke:currentColor;stroke-width:2}.graph-pointer-tip{fill:currentColor}.graph-pointer rect{fill:#242b43;stroke:currentColor}.player-page .graph-stage .graph-pointer text{fill:currentColor;font:600 11px var(--mono)}
+@media(prefers-reduced-motion:reduce){.algorithm-pointer{transition:none}}
 .player-page{
   color-scheme:dark;--ink:#e8e9f2;--muted:#a4adc3;--line:#45475f;
   --blue:#a7a4f7;--blue-soft:#77709f38;--yellow:#e7c86640;

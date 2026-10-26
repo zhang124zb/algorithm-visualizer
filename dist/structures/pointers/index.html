@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="代码逐行高亮与动画同步的算法学习网站，支持随机数据、自动播放、调速和前后单步。"><meta name="color-scheme" content="light"><title>指针入门与进阶 · 算法演示室</title><link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../assets/css/style.css"><link rel="stylesheet" href="../../assets/css/theme.css"><link rel="stylesheet" href="../../assets/css/category.css"><link rel="stylesheet" href="../../structures/pointers/pointers.css"></head><body class="category-page pointer-course-page"><header class="site-header"><div class="wrap header-inner"><a class="brand" href="../../index.html" aria-label="算法演示室主页"><span class="brand-mark" aria-hidden="true">a.</span><span>算法演示室<small>ALGORITHM CLASSROOM</small></span></a><nav class="nav" aria-label="主导航"><a href="../../index.html#structures">数据结构</a><a href="../../index.html#algorithms">算法</a><a href="../../extensions/competition/index.html">竞赛拓展</a></nav><span class="header-tag">LEARN BY SEEING</span></div></header>
+<main class="wrap pointer-course">
+  <nav class="breadcrumb" aria-label="面包屑"><a href="../../index.html">主页</a><span>/</span><a href="../../index.html#structures">数据结构</a><span>/</span>指针入门与进阶</nav>
+  <section class="category-hero pointer-hero">
+    <div class="eyebrow">C++ POINTER CLASSROOM</div>
+    <h1>指针，从“指向哪里”开始。</h1>
+    <p>先看清变量放在哪里，再通过地址找到它。让代码里的 <code>&amp;</code>、<code>*</code> 和 <code>-&gt;</code>，变成可以一步步跟随的关系。</p>
+    <div class="pointer-course-meta"><span>3 个学习层次</span><span>12 节交互课堂</span><span>C++17 固定示例</span></div>
+  </section>
+  <section class="pointer-orientation" aria-label="先分清三个概念">
+    <article><b>值</b><p>变量里现在放的内容。例如 <code>x</code> 的值是 <code>10</code>。</p></article>
+    <article><b>地址</b><p>对象在内存中的位置。用 <code>&amp;x</code> 获取 <code>x</code> 的地址。</p></article>
+    <article><b>指针变量</b><p><code>int* p = &amp;x;</code> 让 <code>p</code> 保存 <code>x</code> 的地址；<code>*p</code> 访问指向的对象。</p></article>
+  </section>
+  <aside class="notice pointer-address-note"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h12v10H2zM2 10l4-4 4 4 2-2 2 2"/></svg><span>图中的 A0、P0、H0 等是教学示意地址。算法里的下标 <code>i/j</code> 表示位置，C++ 对象指针保存地址。课堂使用固定示例展示状态，不读取你电脑的真实内存。</span></aside>
+  <section class="pointer-level-section" aria-labelledby="pointer-level-heading">
+    <h2 id="pointer-level-heading">选择你的学习起点</h2>
+    <p>零基础先认识地址；学过语法后练习数组和传参；进阶再理解间接访问、生命周期与所有权。</p>
+    <div id="pointer-levels" role="tablist" aria-label="指针学习层次"></div>
+  </section>
+  <div class="pointer-course-shell">
+    <aside class="pointer-course-sidebar"><h2>本层课程</h2><nav id="pointer-lessons" aria-label="本层指针课程"></nav></aside>
+    <div class="pointer-course-content">
+      <section class="pointer-lesson-intro" aria-labelledby="pointer-lesson-title"><h2 id="pointer-lesson-title">正在载入指针课堂</h2><p id="pointer-goal"></p><div id="pointer-explanation"></div></section>
+      <div class="pointer-workspace">
+        <section class="pointer-memory-panel" aria-label="变量、地址与指向关系"><div class="pointer-panel-heading"><h3>看见地址与对象</h3><span>地址和值分开观察</span></div><div id="pointer-memory" aria-label="内存关系示意"></div></section>
+        <section class="pointer-code-panel" aria-label="固定 C++ 教学代码"><div class="pointer-panel-heading"><h3>C++17 教学代码</h3><span>黄色标出当前讲解行</span></div><div class="pointer-code-scroll" tabindex="0" aria-label="代码区域"><ol id="pointer-code"></ol></div></section>
+      </div>
+      <p id="pointer-message" class="pointer-step-message" aria-live="polite"></p>
+      <section class="pointer-transport" aria-label="指针课堂播放控制">
+        <button id="pointer-restart" type="button">重新开始</button><button id="pointer-previous" type="button">上一步</button><button id="pointer-play" type="button" aria-pressed="false">自动播放</button><button id="pointer-next" type="button">下一步</button>
+        <label class="sr-only" for="pointer-seek">课堂进度</label><input id="pointer-seek" type="range" min="0" max="0" value="0"><span id="pointer-step-count">0 / 0</span>
+        <label for="pointer-speed">速度<select id="pointer-speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label>
+      </section>
+      <aside class="pointer-pitfall"><h3>这一课容易混淆的地方</h3><p id="pointer-pitfall"></p></aside>
+      <section class="pointer-practice" aria-labelledby="pointer-question"><div class="pointer-practice-label">想一想，再验证</div><h3 id="pointer-question"></h3><div id="pointer-options" role="group" aria-labelledby="pointer-question"></div><p id="pointer-feedback" role="status" aria-live="polite"></p></section>
+      <section class="pointer-related-section"><h3>接着用到哪里</h3><div id="pointer-related"></div></section>
+      <details class="pointer-reference"><summary>查看本课的 C++ 参考资料</summary><div id="pointer-sources"></div></details>
+      <noscript><p>请启用 JavaScript，以选择课程、逐步观察指向关系并完成练习。</p></noscript>
+    </div>
+  </div>
+</main><footer class="footer"><div class="wrap"><span>算法演示室 · 把每一步变化看清楚</span><span>HTML / CSS / JavaScript · 教学语言 C++ / Python / Java</span></div></footer><script src="lessons.js"></script><script src="pointers.js"></script></body></html>

@@ -4,11 +4,13 @@
   "private": true,
   "description": "原生 HTML/CSS/JavaScript 算法可视化教学网站",
   "scripts": {
+    "start": "node scripts/start-local.cjs",
     "generate": "node scripts/generate-pages.cjs",
     "check": "node scripts/check.cjs",
     "preview": "node scripts/serve.cjs",
     "lab:local": "node scripts/local-lab/server.cjs",
     "lab:sandbox:build": "node scripts/local-lab/build-sandbox.cjs",
+    "check:start": "node scripts/verify-start-local.cjs",
     "check:local": "node scripts/verify-local-lab.cjs",
     "check:sandbox": "node scripts/verify-sandbox.cjs",
     "check:sandbox:access": "node scripts/verify-sandbox-access.cjs"
